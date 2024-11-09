@@ -28,23 +28,24 @@ class FilterKuisPage extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           // Row for back button and title
-          Row(
+          Stack(
             children: [
-              IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+              Align(
+                alignment: Alignment.centerLeft,
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
               ),
-              Expanded(
-                child: Center(
-                  child: const Text(
-                    "Filter Kuis",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontFamily: 'Poppins',
-                    ),
+              Center(
+                child: const Text(
+                  "Filter Kuis",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontFamily: 'Poppins',
                   ),
                 ),
               ),
