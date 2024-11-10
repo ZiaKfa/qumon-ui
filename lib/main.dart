@@ -3,6 +3,7 @@ import 'package:qumon/ui/login_page.dart';
 import 'package:qumon/ui/registrasi_page.dart';
 import 'package:qumon/ui/filter_kuis_page.dart';
 import 'package:qumon/ui/peringkat_page.dart';
+import 'package:qumon/ui/profil_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: PeringkatPage(),
+      home: ProfilPage(),
     );
   }
 }
