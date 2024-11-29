@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:qumon/ui/filter_kuis_page.dart';
+import 'package:qumon/ui/home_page.dart';
+import 'package:qumon/ui/peringkat_page.dart';
+import 'package:qumon/ui/tambah_kuis_page.dart';
 
 class ProfilPage extends StatelessWidget {
-  const ProfilPage({Key? key}) : super(key: key);
+  const ProfilPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF1A133E),
+      decoration: const BoxDecoration(
+        color: Color(0xFF1A133E),
       ),
       child: Scaffold(
         backgroundColor: const Color(0xFF1A133E),
@@ -114,7 +118,7 @@ class ProfilPage extends StatelessWidget {
   }
 
   Widget _buildStatisticItem(IconData icon, String label, String value) {
-    return Container(
+    return SizedBox(
       width: 80, // Set a fixed width for each statistic item
       child: Column(
         children: [
@@ -160,7 +164,7 @@ class ProfilPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 30),
-          Center(
+          const Center(
             child: Stack(
               alignment: Alignment.center,
               children: [
@@ -171,11 +175,11 @@ class ProfilPage extends StatelessWidget {
                     value: 37 / 50,
                     strokeWidth: 15,
                     valueColor:
-                        const AlwaysStoppedAnimation<Color>(Color(0xFFFCC822)),
+                        AlwaysStoppedAnimation<Color>(Color(0xFFFCC822)),
                     backgroundColor: Colors.grey,
                   ),
                 ),
-                const Column(
+                Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
@@ -311,9 +315,9 @@ class ProfilPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: const Text(
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: Text(
             "Kuis Saya",
             style: TextStyle(
               color: Colors.white,
@@ -367,17 +371,46 @@ class ProfilPage extends StatelessWidget {
               ),
             ),
           );
-        }).toList(),
+        }),
       ],
     );
   }
 
-  Widget _buildBottomNavigationBar() {
+ Widget _buildBottomNavigationBar() {
+  return Builder(builder: (context) {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
-      backgroundColor: Colors.black,
+      backgroundColor: const Color(0xFF1A133E), // Sesuaikan dengan background navbar
       selectedItemColor: Colors.white,
-      unselectedItemColor: Colors.white54,
+      unselectedItemColor: Colors.white70,
+      onTap: (index) {
+        if (index == 0) {
+          // Aksi untuk menu Home
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return const Homepage();
+          }));
+        } else if (index == 1) {
+          // Aksi untuk menu Filter Kuis
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return const FilterKuisPage();
+          }));
+        } else if (index == 2) {
+          // Aksi untuk menu Tambah
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return const TambahKuisPage();
+          }));
+        } else if (index == 3) {
+          // Aksi untuk menu Ranking
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return const PeringkatPage();
+          }));
+        } else if (index == 4) {
+          // Aksi untuk menu Profil
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return const ProfilPage();
+          }));
+        }
+      },
       items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
@@ -401,5 +434,6 @@ class ProfilPage extends StatelessWidget {
         ),
       ],
     );
-  }
+  });
+}
 }

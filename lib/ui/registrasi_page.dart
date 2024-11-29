@@ -8,7 +8,9 @@ class RegistrasiPage extends StatefulWidget {
 }
 
 class _RegistrasiPageState extends State<RegistrasiPage> {
+  // ignore: unused_field
   final _formKey = GlobalKey<FormState>();
+  // ignore: unused_field
   bool _isLoading = false;
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -18,25 +20,55 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
   bool _confirmPasswordVisible = false;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey[900],
-        image: DecorationImage(
-          image: const AssetImage("assets/images/login_bg.png"),
-          fit: BoxFit.fitWidth,
-          alignment: Alignment.topCenter,
-        ),
+Widget build(BuildContext context) {
+  return Container(
+    decoration: BoxDecoration(
+      color: Colors.grey[900],
+      image: const DecorationImage(
+        image: AssetImage("assets/images/login_bg.png"),
+        fit: BoxFit.fitWidth,
+        alignment: Alignment.topCenter,
       ),
-      child: Scaffold(
-        backgroundColor: const Color.fromARGB(86, 35, 41, 98),
-        body: Stack(children: [
-          Positioned(top: 80, child: _buildTop()),
-          Positioned(bottom: 0, child: _buildBottom()),
-        ]),
+    ),
+    child: Scaffold(
+      backgroundColor: const Color.fromARGB(86, 35, 41, 98),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            backgroundColor: Colors.transparent, 
+            elevation: 0, 
+            floating: true, 
+            pinned: true, 
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                alignment: Alignment.topLeft,
+                padding: const EdgeInsets.all(10.0),
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white), 
+                  onPressed: () {
+                    Navigator.pop(context); 
+                  },
+                ),
+              ),
+            ),
+          ),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Column(
+              children: [
+                const SizedBox(height: 60), // Jarak dari atas
+                _buildTop(),
+                const Spacer(),
+                _buildBottom(),
+              ],
+            ),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget _buildTop() {
     final mediaSize = MediaQuery.of(context).size;
@@ -50,7 +82,7 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
             style: TextStyle(
                 color: Color.fromARGB(255, 240, 221, 16),
                 fontWeight: FontWeight.bold,
-                fontSize: 96,
+                fontSize: 72,
                 fontFamily: 'Poppins',
                 letterSpacing: 2),
           )
@@ -78,33 +110,33 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
   }
 
   Widget _buildForm() {
-    final myColor = Colors.blue;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Daftar Akun Baru!",
-          style: TextStyle(
-              color: Colors.black,
-              fontSize: 22,
-              fontWeight: FontWeight.w600,
-              fontFamily: 'Poppins'),
-        ),
-        _buildText("Buat akun dan uji wawasanmu!"),
-        const SizedBox(height: 50),
-        _buildText("Username"),
-        _usernameTextField(),
-        const SizedBox(height: 30),
-        _buildText("Password"),
-        _passwordTextField(),
-        const SizedBox(height: 30),
-        _buildText("Konfirmasi Password"),
-        _confirmPasswordTextField(),
-        const SizedBox(height: 40),
-        _registrasiButton(),
-      ],
-    );
-  }
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        "Daftar Akun Baru!",
+        style: TextStyle(
+            color: Colors.black,
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+            fontFamily: 'Poppins'),
+      ),
+      _buildText("Buat akun dan uji wawasanmu!"),
+      const SizedBox(height: 50),
+      _buildText("Username"),
+      _usernameTextField(),
+      const SizedBox(height: 30),
+      _buildText("Password"),
+      _passwordTextField(),
+      const SizedBox(height: 30),
+      _buildText("Konfirmasi Password"),
+      _confirmPasswordTextField(),
+      const SizedBox(height: 40),
+      _registrasiButton(),
+    ],
+  );
+}
+
 
   Widget _buildText(String text) {
     return Text(
@@ -197,7 +229,7 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
       child: const Text("Registrasi",
           style: TextStyle(
               color: Color.fromARGB(255, 255, 255, 255),
-              fontSize: 18,
+              fontSize: 16,
               fontFamily: 'Poppins')),
     );
   }

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:qumon/ui/filter_kuis_page.dart';
+import 'package:qumon/ui/profil_page.dart';
+import 'package:qumon/ui/tambah_kuis_page.dart';
 
 class PeringkatPage extends StatefulWidget {
-  PeringkatPage({Key? key}) : super(key: key);
+  const PeringkatPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _PeringkatPageState createState() => _PeringkatPageState();
 }
 
@@ -13,8 +17,8 @@ class _PeringkatPageState extends State<PeringkatPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF1A133E),
+      decoration: const BoxDecoration(
+        color: Color(0xFF1A133E),
       ),
       child: Scaffold(
         backgroundColor: const Color(0xFF1A133E),
@@ -22,6 +26,7 @@ class _PeringkatPageState extends State<PeringkatPage> {
           Positioned(top: 40, child: _buildTop(context)),
           Positioned(bottom: 0, child: _buildBottom(context)),
         ]),
+        bottomNavigationBar: _buildBottomNavigationBar(),
       ),
     );
   }
@@ -46,8 +51,8 @@ class _PeringkatPageState extends State<PeringkatPage> {
                   },
                 ),
               ),
-              Center(
-                child: const Text(
+              const Center(
+                child: Text(
                   "Peringkat",
                   style: TextStyle(
                     color: Colors.white,
@@ -137,6 +142,7 @@ class _PeringkatPageState extends State<PeringkatPage> {
 
   Widget _buildBottom(BuildContext context) {
     final mediaSize = MediaQuery.of(context).size;
+    // ignore: unused_local_variable
     bool showAllQuizzes = false;
 
     return StatefulBuilder(
@@ -173,6 +179,7 @@ class _PeringkatPageState extends State<PeringkatPage> {
         );
       },
     );
+    // ignore: dead_code
     return Container();
   }
 
@@ -291,37 +298,250 @@ class _PeringkatPageState extends State<PeringkatPage> {
         ),
       );
     }).toList();
+    // ignore: dead_code
     return [];
   }
 
-  // Widget _buildBottomNavigationBar() {
-  //   return BottomNavigationBar(
-  //     type: BottomNavigationBarType.fixed,
-  //     backgroundColor: Colors.black,
-  //     selectedItemColor: Colors.white,
-  //     unselectedItemColor: Colors.white54,
-  //     items: const [
-  //       BottomNavigationBarItem(
-  //         icon: Icon(Icons.home),
-  //         label: 'Home',
-  //       ),
-  //       BottomNavigationBarItem(
-  //         icon: Icon(Icons.search),
-  //         label: 'Filter',
-  //       ),
-  //       BottomNavigationBarItem(
-  //         icon: Icon(Icons.add_box, color: Colors.blueAccent),
-  //         label: '',
-  //       ),
-  //       BottomNavigationBarItem(
-  //         icon: Icon(Icons.bar_chart),
-  //         label: 'Ranking',
-  //       ),
-  //       BottomNavigationBarItem(
-  //         icon: Icon(Icons.person),
-  //         label: 'Profile',
-  //       ),
-  //     ],
-  //   );
-  // }
+Widget _buildBottomNavigationBar() {
+  return Container(
+    decoration: BoxDecoration(
+      color: Colors.black,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.white.withOpacity(0.1),
+          spreadRadius: 1,
+          blurRadius: 10,
+          offset: const Offset(0, -3),
+        ),
+      ],
+    ),
+    child: BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Colors.white54,
+      selectedLabelStyle: const TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 10,
+      ),
+      unselectedLabelStyle: const TextStyle(
+        fontSize: 10,
+      ),
+      onTap: (index) {
+        switch (index) {
+          case 0:
+            // Home action
+            break;
+          case 1:
+            // Filter action
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return const FilterKuisPage();
+            }));
+            break;
+          case 2:
+            // Add action (could be a modal or new page)
+            _showAddActionSheet(context);
+            break;
+          case 3:
+            // Ranking action
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return PeringkatPage();
+            }));
+            break;
+          case 4:
+            // Profile action
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return const ProfilPage();
+            }));
+            break;
+        }
+      },
+      items: [
+        _buildNavBarItem(
+          icon: Icons.home_rounded,
+          label: 'Home',
+          activeColor: Colors.white,
+          inactiveColor: Colors.white54,
+        ),
+        _buildNavBarItem(
+          icon: Icons.search_rounded,
+          label: 'Filter',
+          activeColor: Colors.white,
+          inactiveColor: Colors.white54,
+        ),
+        _buildAddButton(),
+        _buildNavBarItem(
+          icon: Icons.bar_chart_rounded,
+          label: 'Ranking',
+          activeColor: Colors.white,
+          inactiveColor: Colors.white54,
+        ),
+        _buildNavBarItem(
+          icon: Icons.person_rounded,
+          label: 'Profile',
+          activeColor: Colors.white,
+          inactiveColor: Colors.white54,
+        ),
+      ],
+    ),
+  );
+}
+
+BottomNavigationBarItem _buildNavBarItem({
+  required IconData icon,
+  required String label,
+  required Color activeColor,
+  required Color inactiveColor,
+}) {
+  return BottomNavigationBarItem(
+    icon: Icon(icon, color: inactiveColor),
+    activeIcon: Icon(icon, color: activeColor),
+    label: label,
+  );
+}
+
+BottomNavigationBarItem _buildAddButton() {
+  return BottomNavigationBarItem(
+    icon: Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.amber, const Color.fromARGB(255, 208, 160, 15)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.amber.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: const Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 28,
+        ),
+      ),
+    ),
+    label: '',
+  );
+}
+
+// Optional: Add method to show a bottom sheet for add action
+void _showAddActionSheet(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.transparent,
+    builder: (BuildContext context) {
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              spreadRadius: 5,
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'What would you like to do?',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[800],
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildAddOption(
+                    icon: Icons.add_circle_outline,
+                    label: 'Create Quiz',
+                    onTap: () {
+                      // Add quiz creation logic
+                      Navigator.push(context, MaterialPageRoute(builder: (context) {
+                        return const TambahKuisPage();
+                      }));
+                    },
+                  ),
+                  _buildAddOption(
+                    icon: Icons.edit_note_rounded,
+                    label: 'Take Quiz',
+                    onTap: () {
+                      // Add quiz taking logic
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+Widget _buildAddOption({
+  required IconData icon,
+  required String label,
+  required VoidCallback onTap,
+}) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.amber, const Color.fromARGB(255, 208, 160, 15)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(15),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.amber.withOpacity(0.4),
+                blurRadius: 10,
+                spreadRadius: 2,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Icon(
+            icon,
+            color: Colors.white,
+            size: 32,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.grey[800],
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    ),
+  );
+}
 }

@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:qumon/ui/registrasi_page.dart';
+import 'package:qumon/ui/profil_page.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
+  // ignore: unused_field
   final _formKey = GlobalKey<FormState>();
-  bool _isLoading = false;
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-
   bool _passwordVisible = false;
-  bool _confirmPasswordVisible = false;
-
   bool rememberUser = false;
 
   @override
@@ -24,73 +22,82 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey[900],
-        image: DecorationImage(
-          image: const AssetImage("assets/images/login_bg.png"),
+        image: const DecorationImage(
+          image: AssetImage("assets/images/login_bg.png"),
           fit: BoxFit.fitWidth,
           alignment: Alignment.topCenter,
         ),
       ),
       child: Scaffold(
+        resizeToAvoidBottomInset: true, 
         backgroundColor: const Color.fromARGB(86, 35, 41, 98),
-        body: Stack(children: [
-          Positioned(top: 80, child: _buildTop()),
-          Positioned(bottom: 0, child: _buildBottom()),
-        ]),
-      ),
-    );
-  }
-
-  Widget _buildTop() {
-    final mediaSize = MediaQuery.of(context).size;
-    return SizedBox(
-      width: mediaSize.width,
-      child: const Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            "Q!",
-            style: TextStyle(
-                color: Color.fromARGB(255, 240, 221, 16),
-                fontWeight: FontWeight.bold,
-                fontSize: 96,
-                fontFamily: 'Poppins',
-                letterSpacing: 2),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBottom() {
-    final mediaSize = MediaQuery.of(context).size;
-    return SizedBox(
-      width: mediaSize.width,
-      child: Card(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(50),
-          topRight: Radius.circular(50),
-        )),
-        child: Padding(
-          padding: const EdgeInsets.all(32.0),
-          child: _buildForm(),
+        body: SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height,
+            ),
+            child: IntrinsicHeight(
+              child: Column(
+                children: [
+                  const SizedBox(height: 80), 
+                  _buildTop(),
+                  const Spacer(),
+                  _buildBottom(),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildForm() {
-    final myColor = Colors.blue;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildTop() {
+    return const Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
+          "Q!",
+          style: TextStyle(
+            color: Color.fromARGB(255, 240, 221, 16),
+            fontWeight: FontWeight.bold,
+            fontSize: 72,
+            fontFamily: 'Poppins',
+            letterSpacing: 2,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _buildBottom() {
+    return Card(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(50),
+          topRight: Radius.circular(50),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: _buildForm(),
+      ),
+    );
+  }
+
+  Widget _buildForm() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text(
           "Selamat Datang!",
           style: TextStyle(
-              color: Colors.black,
-              fontSize: 22,
-              fontWeight: FontWeight.w600,
-              fontFamily: 'Poppins'),
+            color: Colors.black,
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+            fontFamily: 'Poppins',
+          ),
         ),
         _buildText("Masuk untuk memulai tantangan seru!"),
         const SizedBox(height: 40),
@@ -100,28 +107,30 @@ class _LoginPageState extends State<LoginPage> {
         _buildText("Password"),
         _passwordTextField(),
         const SizedBox(height: 30),
-        _buildRememberForgot(),
-        const SizedBox(height: 40),
         _loginButton(),
-        const SizedBox(height: 40),
-        _linkToRegister(),
         const SizedBox(height: 20),
+        // _buildRememberForgot(),
+        // const SizedBox(height: 40),
+        _linkToRegister(),
       ],
     );
   }
 
-  Widget _buildText(String text) {
+  Widget _buildText(String text, {double fontSize = 14}) {
     return Text(
       text,
-      style: const TextStyle(
-          color: Color.fromARGB(255, 0, 0, 0), fontFamily: 'Poppins'),
+      style: TextStyle(
+        color: const Color.fromARGB(255, 0, 0, 0),
+        fontFamily: 'Poppins',
+        fontSize: fontSize,
+      ),
     );
   }
 
   Widget _usernameTextField() {
     return TextFormField(
-      decoration: InputDecoration(),
-      style: const TextStyle(color: Colors.black, fontFamily: 'Georgia'),
+      decoration: const InputDecoration(),
+      style: const TextStyle(color: Colors.black, fontFamily: 'Poppins'),
       keyboardType: TextInputType.text,
       controller: _usernameController,
       validator: (value) {
@@ -159,49 +168,54 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _buildRememberForgot() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Checkbox(
-                value: rememberUser,
-                onChanged: (value) {
-                  setState(() {
-                    rememberUser = value!;
-                  });
-                }),
-            Text(
-              "Simpan Password",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w400),
-            ),
-          ],
-        ),
-        TextButton(
-          onPressed: () {},
-          child: Text(
-            "Lupa Password?",
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w400),
-          ),
-        )
-      ],
-    );
-  }
+  // Widget _buildRememberForgot() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     children: [
+  //       Row(
+  //         children: [
+  //           Checkbox(
+  //             value: rememberUser,
+  //             onChanged: (value) {
+  //               setState(() {
+  //                 rememberUser = value!;
+  //               });
+  //             },
+  //           ),
+  //           const Text(
+  //             "Simpan Password",
+  //             style: TextStyle(
+  //               color: Colors.black,
+  //               fontSize: 14, // Ukuran font untuk "Simpan Password"
+  //               fontFamily: 'Poppins',
+  //               fontWeight: FontWeight.w400,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //       TextButton(
+  //         onPressed: () {},
+  //         child: const Text(
+  //           "Lupa Password?",
+  //           style: TextStyle(
+  //             color: Colors.black,
+  //             fontSize: 14, // Ukuran font untuk "Lupa Password?"
+  //             fontFamily: 'Poppins',
+  //             fontWeight: FontWeight.w400,
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _loginButton() {
     return ElevatedButton(
       onPressed: () {
-        // debugPrint("Email : ${emailController.text}");
-        // debugPrint("Password : ${passwordController.text}");
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ProfilPage()),
+        );
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.black,
@@ -209,11 +223,14 @@ class _LoginPageState extends State<LoginPage> {
         elevation: 20,
         minimumSize: const Size.fromHeight(60),
       ),
-      child: const Text("Login",
-          style: TextStyle(
-              color: Color.fromARGB(255, 255, 255, 255),
-              fontSize: 18,
-              fontFamily: 'Poppins')),
+      child: const Text(
+        "Login",
+        style: TextStyle(
+          color: Color.fromARGB(255, 255, 255, 255),
+          fontSize: 16,
+          fontFamily: 'Poppins',
+        ),
+      ),
     );
   }
 
@@ -221,11 +238,11 @@ class _LoginPageState extends State<LoginPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
+        const Text(
           "Belum punya akun? ",
           style: TextStyle(
               color: Colors.black,
-              fontSize: 16,
+              fontSize: 14, 
               fontFamily: 'Poppins',
               fontWeight: FontWeight.w400),
         ),
@@ -236,15 +253,15 @@ class _LoginPageState extends State<LoginPage> {
               MaterialPageRoute(builder: (context) => const RegistrasiPage()),
             );
           },
-          child: Text(
+          child: const Text(
             "Daftar",
             style: TextStyle(
                 color: Colors.blue,
-                fontSize: 16,
+                fontSize: 14, 
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w400),
           ),
-        )
+        ),
       ],
     );
   }

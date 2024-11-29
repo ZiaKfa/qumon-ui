@@ -1,8 +1,12 @@
+// ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
+import 'package:qumon/ui/home_page.dart';
 import 'package:qumon/ui/login_page.dart';
+import 'package:qumon/ui/tambah_kuis_page.dart';
+import 'package:qumon/ui/peringkat_page.dart';
 import 'package:qumon/ui/registrasi_page.dart';
 import 'package:qumon/ui/filter_kuis_page.dart';
-import 'package:qumon/ui/peringkat_page.dart';
 import 'package:qumon/ui/profil_page.dart';
 
 void main() {
@@ -36,7 +40,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: ProfilPage(),
+      home: const LoginPage(),
     );
   }
 }
