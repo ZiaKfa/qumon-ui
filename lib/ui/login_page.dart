@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:qumon/bloc/login_bloc.dart';
+import 'package:qumon/ui/home_page.dart';
 import 'package:qumon/ui/registrasi_page.dart';
-import 'package:qumon/ui/profil_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,10 +13,10 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   // ignore: unused_field
   final _formKey = GlobalKey<FormState>();
+  bool isLoading = false;
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _passwordVisible = false;
-  bool rememberUser = false;
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +87,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildForm() {
-    return Column(
+  return Form(
+    key: _formKey,
+    child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -109,12 +112,12 @@ class _LoginPageState extends State<LoginPage> {
         const SizedBox(height: 30),
         _loginButton(),
         const SizedBox(height: 20),
-        // _buildRememberForgot(),
-        // const SizedBox(height: 40),
         _linkToRegister(),
       ],
-    );
-  }
+    ),
+  );
+}
+
 
   Widget _buildText(String text, {double fontSize = 14}) {
     return Text(
@@ -168,54 +171,14 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // Widget _buildRememberForgot() {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //     children: [
-  //       Row(
-  //         children: [
-  //           Checkbox(
-  //             value: rememberUser,
-  //             onChanged: (value) {
-  //               setState(() {
-  //                 rememberUser = value!;
-  //               });
-  //             },
-  //           ),
-  //           const Text(
-  //             "Simpan Password",
-  //             style: TextStyle(
-  //               color: Colors.black,
-  //               fontSize: 14, // Ukuran font untuk "Simpan Password"
-  //               fontFamily: 'Poppins',
-  //               fontWeight: FontWeight.w400,
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //       TextButton(
-  //         onPressed: () {},
-  //         child: const Text(
-  //           "Lupa Password?",
-  //           style: TextStyle(
-  //             color: Colors.black,
-  //             fontSize: 14, // Ukuran font untuk "Lupa Password?"
-  //             fontFamily: 'Poppins',
-  //             fontWeight: FontWeight.w400,
-  //           ),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
-
   Widget _loginButton() {
     return ElevatedButton(
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const ProfilPage()),
-        );
+        if(_formKey.currentState!.validate()){
+          if(!isLoading){
+             _login();
+          }
+        }
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.black,
@@ -233,6 +196,28 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
+    void _login(){
+        _formKey.currentState!.save();
+        setState((){
+          isLoading = true;
+        });
+        LoginBloc.login(
+          name: _usernameController.text,
+          password: _passwordController.text,
+        ).then((value) async {
+          if (value.status==true) {
+            Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const Homepage()));
+          } else {
+            print(value.status);
+          }
+        }, onError: (error) {
+          print(error);
+        }
+        );
+      }
+   
 
   Widget _linkToRegister() {
     return Row(
