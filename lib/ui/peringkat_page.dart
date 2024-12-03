@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qumon/ui/filter_kuis_page.dart';
+import 'package:qumon/ui/home_page.dart';
 import 'package:qumon/ui/profil_page.dart';
 import 'package:qumon/ui/tambah_kuis_page.dart';
 
@@ -26,7 +27,7 @@ class _PeringkatPageState extends State<PeringkatPage> {
           Positioned(top: 40, child: _buildTop(context)),
           Positioned(bottom: 0, child: _buildBottom(context)),
         ]),
-        bottomNavigationBar: _buildBottomNavigationBar(),
+        bottomNavigationBar: _buildBottomNavigationBar(context),
       ),
     );
   }
@@ -302,10 +303,10 @@ class _PeringkatPageState extends State<PeringkatPage> {
     return [];
   }
 
-Widget _buildBottomNavigationBar() {
+Widget _buildBottomNavigationBar(BuildContext context) {
   return Container(
     decoration: BoxDecoration(
-      color: Colors.black,
+      color: const Color(0xFF1A133E),
       boxShadow: [
         BoxShadow(
           color: Colors.white.withOpacity(0.1),
@@ -320,228 +321,98 @@ Widget _buildBottomNavigationBar() {
       backgroundColor: Colors.transparent,
       elevation: 0,
       selectedItemColor: Colors.white,
-      unselectedItemColor: Colors.white54,
+      unselectedItemColor: Colors.white70,
       selectedLabelStyle: const TextStyle(
+        fontFamily: 'Poppins',
         fontWeight: FontWeight.bold,
         fontSize: 10,
       ),
       unselectedLabelStyle: const TextStyle(
+        fontFamily: 'Poppins',
         fontSize: 10,
       ),
       onTap: (index) {
         switch (index) {
           case 0:
-            // Home action
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const Homepage()));
             break;
           case 1:
-            // Filter action
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return const FilterKuisPage();
-            }));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const FilterKuisPage()));
             break;
           case 2:
-            // Add action (could be a modal or new page)
-            _showAddActionSheet(context);
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const TambahKuisPage()));
             break;
           case 3:
-            // Ranking action
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return PeringkatPage();
-            }));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const PeringkatPage()));
             break;
           case 4:
-            // Profile action
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return const ProfilPage();
-            }));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilPage()));
             break;
         }
       },
       items: [
-        _buildNavBarItem(
+        _buildBottomNavigationBarItem(
           icon: Icons.home_rounded,
           label: 'Home',
-          activeColor: Colors.white,
-          inactiveColor: Colors.white54,
         ),
-        _buildNavBarItem(
+        _buildBottomNavigationBarItem(
           icon: Icons.search_rounded,
           label: 'Filter',
-          activeColor: Colors.white,
-          inactiveColor: Colors.white54,
         ),
-        _buildAddButton(),
-        _buildNavBarItem(
+        _buildSpecialAddButton(),
+        _buildBottomNavigationBarItem(
           icon: Icons.bar_chart_rounded,
           label: 'Ranking',
-          activeColor: Colors.white,
-          inactiveColor: Colors.white54,
         ),
-        _buildNavBarItem(
+        _buildBottomNavigationBarItem(
           icon: Icons.person_rounded,
           label: 'Profile',
-          activeColor: Colors.white,
-          inactiveColor: Colors.white54,
         ),
       ],
     ),
   );
 }
 
-BottomNavigationBarItem _buildNavBarItem({
+// Helper method to create standard navigation bar items
+BottomNavigationBarItem _buildBottomNavigationBarItem({
   required IconData icon,
   required String label,
-  required Color activeColor,
-  required Color inactiveColor,
 }) {
   return BottomNavigationBarItem(
-    icon: Icon(icon, color: inactiveColor),
-    activeIcon: Icon(icon, color: activeColor),
+    icon: Icon(icon, size: 24),
+    activeIcon: Icon(icon, size: 28, color: Colors.white),
     label: label,
   );
 }
 
-BottomNavigationBarItem _buildAddButton() {
+// Special method to create a more prominent "Add" button
+BottomNavigationBarItem _buildSpecialAddButton() {
   return BottomNavigationBarItem(
     icon: Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.amber, const Color.fromARGB(255, 208, 160, 15)],
+          colors: [Colors.blueAccent, Colors.purpleAccent],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.amber.withOpacity(0.5),
+            color: Colors.blueAccent.withOpacity(0.5),
             spreadRadius: 2,
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
       ),
-      child: const Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-          size: 28,
-        ),
+      padding: const EdgeInsets.all(10),
+      child: const Icon(
+        Icons.add_rounded,
+        color: Colors.white,
+        size: 28,
       ),
     ),
     label: '',
-  );
-}
-
-// Optional: Add method to show a bottom sheet for add action
-void _showAddActionSheet(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    backgroundColor: Colors.transparent,
-    builder: (BuildContext context) {
-      return Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              spreadRadius: 5,
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'What would you like to do?',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey[800],
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildAddOption(
-                    icon: Icons.add_circle_outline,
-                    label: 'Create Quiz',
-                    onTap: () {
-                      // Add quiz creation logic
-                      Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        return const TambahKuisPage();
-                      }));
-                    },
-                  ),
-                  _buildAddOption(
-                    icon: Icons.edit_note_rounded,
-                    label: 'Take Quiz',
-                    onTap: () {
-                      // Add quiz taking logic
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
-
-Widget _buildAddOption({
-  required IconData icon,
-  required String label,
-  required VoidCallback onTap,
-}) {
-  return GestureDetector(
-    onTap: onTap,
-    child: Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.amber, const Color.fromARGB(255, 208, 160, 15)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(15),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.amber.withOpacity(0.4),
-                blurRadius: 10,
-                spreadRadius: 2,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Icon(
-            icon,
-            color: Colors.white,
-            size: 32,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.grey[800],
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    ),
   );
 }
 }
