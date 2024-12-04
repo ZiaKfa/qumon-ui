@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:qumon/bloc/logout_bloc.dart';
 import 'package:qumon/ui/filter_kuis_page.dart';
 import 'package:qumon/ui/home_page.dart';
+import 'package:qumon/ui/login_page.dart';
 import 'package:qumon/ui/peringkat_page.dart';
 import 'package:qumon/ui/tambah_kuis_page.dart';
 
 class ProfilPage extends StatelessWidget {
   const ProfilPage({super.key});
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/images/bg.png'), 
-          fit: BoxFit.cover, 
+          image: AssetImage('assets/images/bg.png'),
+          fit: BoxFit.cover,
         ),
       ),
       child: Scaffold(
-        backgroundColor: Colors.transparent, 
+        backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -55,7 +57,7 @@ class ProfilPage extends StatelessWidget {
               ),
               const Center(
                 child: Text(
-                  "Profile",
+                  "Profil",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -66,25 +68,78 @@ class ProfilPage extends StatelessWidget {
               Align(
                 alignment: Alignment.centerRight,
                 child: IconButton(
-                  icon: const Icon(Icons.settings, color: Colors.white),
+                  icon: const Icon(Icons.logout, color: Colors.white),
                   onPressed: () {
-                    
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          backgroundColor:
+                              const Color.fromARGB(255, 255, 255, 255),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          title: const Text(
+                            'Keluar',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          content: const Text(
+                            'Apakah kamu yakin ingin keluar?',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'Poppins',
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text(
+                                'Batal',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: 'Poppins',
+                                ),
+                              ),
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              onPressed: () async {
+                                await LogoutBloc.logout();
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                                  (route) => false,
+                                );
+                              },
+                              child: const Text(
+                                'Keluar',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Poppins',
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   },
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 40),
-        CircleAvatar(
-          radius: 50,
-          backgroundColor: Colors.grey[300],
-          child: Icon(
-            Icons.person,
-            color: Colors.grey[800],
-            size: 40,
-          ),
-        ),
+        const SizedBox(height: 30),
         const SizedBox(height: 15),
         const Text(
           "Nama Pengguna",
@@ -214,7 +269,7 @@ class ProfilPage extends StatelessWidget {
               _buildStatisticCard("5", "Kuis dibuat", Icons.edit, Colors.white),
               const SizedBox(width: 20),
               _buildStatisticCard(
-                "21", "Kuis benar", Icons.check, const Color(0xFFFCC822)),
+                  "21", "Kuis benar", Icons.check, const Color(0xFFFCC822)),
             ],
           ),
         ],
@@ -381,110 +436,120 @@ class ProfilPage extends StatelessWidget {
     );
   }
 
- Widget _buildBottomNavigationBar(BuildContext context) {
-  return Container(
-    decoration: BoxDecoration(
-      color: const Color(0xFF1A133E),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.white.withOpacity(0.1),
-          spreadRadius: 1,
-          blurRadius: 10,
-          offset: const Offset(0, -3),
-        ),
-      ],
-    ),
-    child: BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      selectedItemColor: Colors.white,
-      unselectedItemColor: Colors.white70,
-      selectedLabelStyle: const TextStyle(
-        fontFamily: 'Poppins',
-        fontWeight: FontWeight.bold,
-        fontSize: 10,
+  Widget _buildBottomNavigationBar(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF1A133E),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 10,
+            offset: const Offset(0, -3),
+          ),
+        ],
       ),
-      unselectedLabelStyle: const TextStyle(
-        fontFamily: 'Poppins',
-        fontSize: 10,
+      child: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white70,
+        selectedLabelStyle: const TextStyle(
+          fontFamily: 'Poppins',
+          fontWeight: FontWeight.bold,
+          fontSize: 10,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: 10,
+        ),
+        currentIndex: 4,
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Homepage()));
+              break;
+            case 1:
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const FilterKuisPage()));
+              break;
+            case 2:
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const TambahKuisPage()));
+              break;
+            case 3:
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PeringkatPage()));
+              break;
+            case 4:
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const ProfilPage()));
+              break;
+          }
+        },
+        items: [
+          _buildBottomNavigationBarItem(
+            icon: Icons.home_rounded,
+            label: 'Home',
+          ),
+          _buildBottomNavigationBarItem(
+            icon: Icons.search_rounded,
+            label: 'Filter',
+          ),
+          _buildSpecialAddButton(),
+          _buildBottomNavigationBarItem(
+            icon: Icons.bar_chart_rounded,
+            label: 'Ranking',
+          ),
+          _buildBottomNavigationBarItem(
+            icon: Icons.person_rounded,
+            label: 'Profile',
+          ),
+        ],
       ),
-      currentIndex: 4,
-      onTap: (index) {
-        switch (index) {
-          case 0:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const Homepage()));
-            break;
-          case 1:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const FilterKuisPage()));
-            break;
-          case 2:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const TambahKuisPage()));
-            break;
-          case 3:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const PeringkatPage()));
-            break;
-          case 4:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilPage()));
-            break;
-        }
-      },
-      items: [
-        _buildBottomNavigationBarItem(
-          icon: Icons.home_rounded,
-          label: 'Home',
-        ),
-        _buildBottomNavigationBarItem(
-          icon: Icons.search_rounded,
-          label: 'Filter',
-        ),
-        _buildSpecialAddButton(),
-        _buildBottomNavigationBarItem(
-          icon: Icons.bar_chart_rounded,
-          label: 'Ranking',
-        ),
-        _buildBottomNavigationBarItem(
-          icon: Icons.person_rounded,
-          label: 'Profile',
-        ),
-      ],
-    ),
-  );
-}
+    );
+  }
 
 // Helper method to create standard navigation bar items
-BottomNavigationBarItem _buildBottomNavigationBarItem({
-  required IconData icon,
-  required String label,
-}) {
-  return BottomNavigationBarItem(
-    icon: Icon(icon, size: 24),
-    activeIcon: Icon(icon, size: 28, color: Colors.white),
-    label: label,
-  );
-}
+  BottomNavigationBarItem _buildBottomNavigationBarItem({
+    required IconData icon,
+    required String label,
+  }) {
+    return BottomNavigationBarItem(
+      icon: Icon(icon, size: 24),
+      activeIcon: Icon(icon, size: 28, color: Colors.white),
+      label: label,
+    );
+  }
 
 // Special method to create a more prominent "Add" button
-BottomNavigationBarItem _buildSpecialAddButton() {
-  return BottomNavigationBarItem(
-    icon: Container(
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Colors.amber, const Color.fromARGB(255, 210, 159, 5)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+  BottomNavigationBarItem _buildSpecialAddButton() {
+    return BottomNavigationBarItem(
+      icon: Container(
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Colors.amber, const Color.fromARGB(255, 210, 159, 5)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(12),
         ),
-        borderRadius: BorderRadius.circular(12),
-        
+        padding: const EdgeInsets.all(10),
+        child: const Icon(
+          Icons.add_rounded,
+          color: Colors.white,
+          size: 28,
+        ),
       ),
-      padding: const EdgeInsets.all(10),
-      child: const Icon(
-        Icons.add_rounded,
-        color: Colors.white,
-        size: 28,
-      ),
-    ),
-    label: '',
-  );
-}
+      label: '',
+    );
+  }
 }
