@@ -117,7 +117,8 @@ class ProfilPage extends StatelessWidget {
                               onPressed: () async {
                                 await LogoutBloc.logout();
                                 Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                                  MaterialPageRoute(
+                                      builder: (context) => const LoginPage()),
                                   (route) => false,
                                 );
                               },
@@ -176,8 +177,7 @@ class ProfilPage extends StatelessWidget {
   }
 
   Widget _buildStatisticItem(IconData icon, String label, String value) {
-    return SizedBox(
-      width: 80, // Set a fixed width for each statistic item
+    return Flexible(
       child: Column(
         children: [
           Icon(icon, color: Colors.black),

@@ -5,4 +5,5 @@ class ApiUrl {
   static const String users = baseUrl + '/users';
   static const String quiz = baseUrl + '/quiz';
   static const String leaderboard = baseUrl + '/leaderboard';
+  static const String weekly = leaderboard + '/weekly';
 }

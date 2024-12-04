@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:qumon/helpers/api.dart';
+import 'package:qumon/helpers/api_url.dart';
 import 'package:qumon/ui/filter_kuis_page.dart';
 import 'package:qumon/ui/home_page.dart';
 import 'package:qumon/ui/profil_page.dart';
 import 'package:qumon/ui/tambah_kuis_page.dart';
+import 'dart:convert';
 
 class PeringkatPage extends StatefulWidget {
   const PeringkatPage({super.key});
@@ -14,6 +17,14 @@ class PeringkatPage extends StatefulWidget {
 
 class _PeringkatPageState extends State<PeringkatPage> {
   bool isWeeklySelected = true; // default to weekly
+  List<dynamic> leaderboard = [];
+  List<dynamic> weeklyLeaderboard = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchWeeklyRankingData();    
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +96,8 @@ class _PeringkatPageState extends State<PeringkatPage> {
                       onTap: () {
                         setState(() {
                           isWeeklySelected = true;
+                          removeWeeklyRankingData();
+                          fetchWeeklyRankingData();
                         });
                       },
                       child: AnimatedContainer(
@@ -118,6 +131,8 @@ class _PeringkatPageState extends State<PeringkatPage> {
                       onTap: () {
                         setState(() {
                           isWeeklySelected = false;
+                          removeRankingData();
+                          fetchRankingData();
                         });
                       },
                       child: AnimatedContainer(
@@ -198,47 +213,12 @@ class _PeringkatPageState extends State<PeringkatPage> {
   }
 
   List<Widget> _buildRankingList() {
-    // Data untuk daftar peringkat
-    final rankings = [
-      {
-        'rank': 1,
-        'name': 'Muhammad Khadziq',
-        'points': 2569,
-        'countryFlag': '🇵🇹',
-        'profilePic': 'https://link.to/profile1.jpg',
-      },
-      {
-        'rank': 2,
-        'name': 'Ziakfa',
-        'points': 1469,
-        'countryFlag': '🇫🇷',
-        'profilePic': 'https://link.to/profile2.jpg',
-      },
-      {
-        'rank': 3,
-        'name': 'Daniel Abdillah',
-        'points': 1053,
-        'countryFlag': '🇨🇦',
-        'profilePic': 'https://link.to/profile3.jpg',
-      },
-      {
-        'rank': 4,
-        'name': 'Madelyn Dias',
-        'points': 590,
-        'countryFlag': '🇮🇳',
-        'profilePic': 'https://link.to/profile4.jpg',
-      },
-      {
-        'rank': 5,
-        'name': 'Zain Vaccaro',
-        'points': 448,
-        'countryFlag': '🇮🇹',
-        'profilePic': 'https://link.to/profile5.jpg',
-      },
-      // Tambahkan data peringkat lainnya jika diperlukan
-    ];
+    List<dynamic> rankings = isWeeklySelected ? weeklyLeaderboard : leaderboard;
+    
 
     return rankings.map((user) {
+      int rank = rankings.indexOf(user) + 1;
+      user['rank'] = rank;
       return Card(
         color: Colors.white,
         margin: const EdgeInsets.only(bottom: 15),
@@ -262,10 +242,6 @@ class _PeringkatPageState extends State<PeringkatPage> {
                 ),
                 const SizedBox(width: 10),
                 // Foto profil
-                CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(user['profilePic'] as String),
-                ),
                 const SizedBox(width: 10),
                 // Informasi user (Nama dan total poin)
                 Expanded(
@@ -275,7 +251,7 @@ class _PeringkatPageState extends State<PeringkatPage> {
                         MainAxisAlignment.center, // Center vertically
                     children: [
                       Text(
-                        user['name'] as String,
+                        user['user'] as String,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -284,7 +260,7 @@ class _PeringkatPageState extends State<PeringkatPage> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        "${user['points']} points",
+                        "${user['total_correct_answer']} points",
                         style: const TextStyle(
                           color: Color(0xFF858494),
                           fontSize: 12,
@@ -431,5 +407,38 @@ class _PeringkatPageState extends State<PeringkatPage> {
       ),
       label: '',
     );
+  }
+
+  Future<void> fetchRankingData() async {
+    String url = ApiUrl.leaderboard;
+    var response = await Api().get(url);
+    var jsonObj = jsonDecode(response.body);
+    print(jsonObj);
+    setState(() {
+      leaderboard = jsonObj['data'] as List<dynamic>;
+    });
+  }
+  
+
+  Future<void> fetchWeeklyRankingData() async {
+    String url = ApiUrl.weekly;
+    var response = await Api().get(url);
+    var jsonObj = jsonDecode(response.body);
+    print(jsonObj);
+    setState(() {
+      weeklyLeaderboard = jsonObj['data'] as List<dynamic>;
+    });
+  }
+
+  Future<void> removeRankingData() async {
+    setState(() {
+      leaderboard = [];
+    });
+  }
+
+  Future<void> removeWeeklyRankingData() async {
+    setState(() {
+      weeklyLeaderboard = [];
+    });
   }
 }
