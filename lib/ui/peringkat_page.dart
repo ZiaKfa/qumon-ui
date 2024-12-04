@@ -23,10 +23,18 @@ class _PeringkatPageState extends State<PeringkatPage> {
       ),
       child: Scaffold(
         backgroundColor: const Color(0xFF1A133E),
-        body: Stack(children: [
-          Positioned(top: 40, child: _buildTop(context)),
-          Positioned(bottom: 0, child: _buildBottom(context)),
-        ]),
+        body: SafeArea(
+          child: Column(
+            children: [
+              // Bagian atas
+              _buildTop(context),
+              // Expanded untuk memberi ruang bagi konten lainnya
+              Expanded(
+                child: _buildBottom(context),
+              ),
+            ],
+          ),
+        ),
         bottomNavigationBar: _buildBottomNavigationBar(context),
       ),
     );
@@ -35,108 +43,113 @@ class _PeringkatPageState extends State<PeringkatPage> {
   Widget _buildTop(BuildContext context) {
     final mediaSize = MediaQuery.of(context).size;
 
-    return SizedBox(
-      width: mediaSize.width,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Row for back button and title
-          Stack(
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-              const Center(
-                child: Text(
-                  "Peringkat",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontFamily: 'Poppins',
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 30),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: 100.0), // Mengatur padding kiri dan kanan
-            child: Row(
+    return Padding(
+      padding: const EdgeInsets.only(
+          top: 16.0, bottom: 16.0), // Menambahkan margin atas dan bawah
+      child: SizedBox(
+        width: mediaSize.width,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Row for back button and title
+            Stack(
               children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isWeeklySelected = true;
-                      });
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    onPressed: () {
+                      Navigator.pop(context);
                     },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 20.0),
-                      decoration: BoxDecoration(
-                        color: isWeeklySelected
-                            ? Colors.amber
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Mingguan",
-                          style: TextStyle(
-                            color:
-                                isWeeklySelected ? Colors.black : Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
                   ),
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isWeeklySelected = false;
-                      });
-                    },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 20.0),
-                      decoration: BoxDecoration(
-                        color: !isWeeklySelected
-                            ? Colors.amber
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Total",
-                          style: TextStyle(
-                            color:
-                                !isWeeklySelected ? Colors.black : Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
+                const Center(
+                  child: Text(
+                    "Peringkat",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontFamily: 'Poppins',
                     ),
                   ),
                 ),
               ],
             ),
-          ),
-        ],
+            const SizedBox(height: 30),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 50.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isWeeklySelected = true;
+                        });
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 20.0),
+                        decoration: BoxDecoration(
+                          color: isWeeklySelected
+                              ? Colors.amber
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Mingguan",
+                            style: TextStyle(
+                              color: isWeeklySelected
+                                  ? Colors.black
+                                  : Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isWeeklySelected = false;
+                        });
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 20.0),
+                        decoration: BoxDecoration(
+                          color: !isWeeklySelected
+                              ? Colors.amber
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Total",
+                            style: TextStyle(
+                              color: !isWeeklySelected
+                                  ? Colors.black
+                                  : Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -303,116 +316,120 @@ class _PeringkatPageState extends State<PeringkatPage> {
     return [];
   }
 
-Widget _buildBottomNavigationBar(BuildContext context) {
-  return Container(
-    decoration: BoxDecoration(
-      color: const Color(0xFF1A133E),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.white.withOpacity(0.1),
-          spreadRadius: 1,
-          blurRadius: 10,
-          offset: const Offset(0, -3),
-        ),
-      ],
-    ),
-    child: BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      selectedItemColor: Colors.white,
-      unselectedItemColor: Colors.white70,
-      selectedLabelStyle: const TextStyle(
-        fontFamily: 'Poppins',
-        fontWeight: FontWeight.bold,
-        fontSize: 10,
-      ),
-      unselectedLabelStyle: const TextStyle(
-        fontFamily: 'Poppins',
-        fontSize: 10,
-      ),
-      onTap: (index) {
-        switch (index) {
-          case 0:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const Homepage()));
-            break;
-          case 1:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const FilterKuisPage()));
-            break;
-          case 2:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const TambahKuisPage()));
-            break;
-          case 3:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const PeringkatPage()));
-            break;
-          case 4:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilPage()));
-            break;
-        }
-      },
-      items: [
-        _buildBottomNavigationBarItem(
-          icon: Icons.home_rounded,
-          label: 'Home',
-        ),
-        _buildBottomNavigationBarItem(
-          icon: Icons.search_rounded,
-          label: 'Filter',
-        ),
-        _buildSpecialAddButton(),
-        _buildBottomNavigationBarItem(
-          icon: Icons.bar_chart_rounded,
-          label: 'Ranking',
-        ),
-        _buildBottomNavigationBarItem(
-          icon: Icons.person_rounded,
-          label: 'Profile',
-        ),
-      ],
-    ),
-  );
-}
-
-// Helper method to create standard navigation bar items
-BottomNavigationBarItem _buildBottomNavigationBarItem({
-  required IconData icon,
-  required String label,
-}) {
-  return BottomNavigationBarItem(
-    icon: Icon(icon, size: 24),
-    activeIcon: Icon(icon, size: 28, color: Colors.white),
-    label: label,
-  );
-}
-
-// Special method to create a more prominent "Add" button
-BottomNavigationBarItem _buildSpecialAddButton() {
-  return BottomNavigationBarItem(
-    icon: Container(
+  Widget _buildBottomNavigationBar(BuildContext context) {
+    return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.blueAccent, Colors.purpleAccent],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(12),
+        color: const Color(0xFF1A133E),
         boxShadow: [
           BoxShadow(
-            color: Colors.blueAccent.withOpacity(0.5),
-            spreadRadius: 2,
+            color: Colors.white.withOpacity(0.1),
+            spreadRadius: 1,
             blurRadius: 10,
-            offset: const Offset(0, 4),
+            offset: const Offset(0, -3),
           ),
         ],
       ),
-      padding: const EdgeInsets.all(10),
-      child: const Icon(
-        Icons.add_rounded,
-        color: Colors.white,
-        size: 28,
+      child: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white70,
+        selectedLabelStyle: const TextStyle(
+          fontFamily: 'Poppins',
+          fontWeight: FontWeight.bold,
+          fontSize: 10,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: 10,
+        ),
+        currentIndex: 3,
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Homepage()));
+              break;
+            case 1:
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const FilterKuisPage()));
+              break;
+            case 2:
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const TambahKuisPage()));
+              break;
+            case 3:
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PeringkatPage()));
+              break;
+            case 4:
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const ProfilPage()));
+              break;
+          }
+        },
+        items: [
+          _buildBottomNavigationBarItem(
+            icon: Icons.home_rounded,
+            label: 'Home',
+          ),
+          _buildBottomNavigationBarItem(
+            icon: Icons.search_rounded,
+            label: 'Filter',
+          ),
+          _buildSpecialAddButton(),
+          _buildBottomNavigationBarItem(
+            icon: Icons.bar_chart_rounded,
+            label: 'Ranking',
+          ),
+          _buildBottomNavigationBarItem(
+            icon: Icons.person_rounded,
+            label: 'Profile',
+          ),
+        ],
       ),
-    ),
-    label: '',
-  );
-}
+    );
+  }
+
+// Helper method to create standard navigation bar items
+  BottomNavigationBarItem _buildBottomNavigationBarItem({
+    required IconData icon,
+    required String label,
+  }) {
+    return BottomNavigationBarItem(
+      icon: Icon(icon, size: 24),
+      activeIcon: Icon(icon, size: 28, color: Colors.white),
+      label: label,
+    );
+  }
+
+// Special method to create a more prominent "Add" button
+  BottomNavigationBarItem _buildSpecialAddButton() {
+    return BottomNavigationBarItem(
+      icon: Container(
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Colors.amber, Color.fromARGB(255, 210, 159, 5)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: const EdgeInsets.all(10),
+        child: const Icon(
+          Icons.add_rounded,
+          color: Colors.white,
+          size: 28,
+        ),
+      ),
+      label: '',
+    );
+  }
 }

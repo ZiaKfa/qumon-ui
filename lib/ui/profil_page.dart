@@ -7,14 +7,17 @@ import 'package:qumon/ui/tambah_kuis_page.dart';
 class ProfilPage extends StatelessWidget {
   const ProfilPage({super.key});
 
-  @override
+   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: Color(0xFF1A133E),
+        image: DecorationImage(
+          image: AssetImage('assets/images/bg.png'), 
+          fit: BoxFit.cover, 
+        ),
       ),
       child: Scaffold(
-        backgroundColor: const Color(0xFF1A133E),
+        backgroundColor: Colors.transparent, 
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -176,7 +179,7 @@ class ProfilPage extends StatelessWidget {
                     strokeWidth: 15,
                     valueColor:
                         AlwaysStoppedAnimation<Color>(Color(0xFFFCC822)),
-                    backgroundColor: Colors.grey,
+                    backgroundColor: Color.fromARGB(255, 219, 219, 219),
                   ),
                 ),
                 Column(
@@ -188,6 +191,7 @@ class ProfilPage extends StatelessWidget {
                         color: Colors.white,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
+                        fontFamily: 'Poppins',
                       ),
                     ),
                     Text(
@@ -195,6 +199,7 @@ class ProfilPage extends StatelessWidget {
                       style: TextStyle(
                         color: Colors.white70,
                         fontSize: 12,
+                        fontFamily: 'Poppins',
                       ),
                     ),
                   ],
@@ -209,7 +214,7 @@ class ProfilPage extends StatelessWidget {
               _buildStatisticCard("5", "Kuis dibuat", Icons.edit, Colors.white),
               const SizedBox(width: 20),
               _buildStatisticCard(
-                  "21", "Kuis benar", Icons.check, const Color(0xFFFCC822)),
+                "21", "Kuis benar", Icons.check, const Color(0xFFFCC822)),
             ],
           ),
         ],
@@ -404,6 +409,7 @@ class ProfilPage extends StatelessWidget {
         fontFamily: 'Poppins',
         fontSize: 10,
       ),
+      currentIndex: 4,
       onTap: (index) {
         switch (index) {
           case 0:
@@ -463,20 +469,13 @@ BottomNavigationBarItem _buildSpecialAddButton() {
   return BottomNavigationBarItem(
     icon: Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.blueAccent, Colors.purpleAccent],
+        gradient: const LinearGradient(
+          colors: [Colors.amber, const Color.fromARGB(255, 210, 159, 5)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.blueAccent.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        
       ),
       padding: const EdgeInsets.all(10),
       child: const Icon(

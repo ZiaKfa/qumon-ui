@@ -145,115 +145,127 @@ class TambahKuisPage extends StatelessWidget {
   }
 
   Widget _buildBottomNavigationBar(BuildContext context) {
-  return Container(
-    decoration: BoxDecoration(
-      color: const Color(0xFF1A133E),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.white.withOpacity(0.1),
-          spreadRadius: 1,
-          blurRadius: 10,
-          offset: const Offset(0, -3),
-        ),
-      ],
-    ),
-    child: BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      selectedItemColor: Colors.white,
-      unselectedItemColor: Colors.white70,
-      selectedLabelStyle: const TextStyle(
-        fontFamily: 'Poppins',
-        fontWeight: FontWeight.bold,
-        fontSize: 10,
-      ),
-      unselectedLabelStyle: const TextStyle(
-        fontFamily: 'Poppins',
-        fontSize: 10,
-      ),
-      onTap: (index) {
-        switch (index) {
-          case 0:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const Homepage()));
-            break;
-          case 1:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const FilterKuisPage()));
-            break;
-          case 2:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const TambahKuisPage()));
-            break;
-          case 3:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const PeringkatPage()));
-            break;
-          case 4:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilPage()));
-            break;
-        }
-      },
-      items: [
-        _buildBottomNavigationBarItem(
-          icon: Icons.home_rounded,
-          label: 'Home',
-        ),
-        _buildBottomNavigationBarItem(
-          icon: Icons.search_rounded,
-          label: 'Filter',
-        ),
-        _buildSpecialAddButton(),
-        _buildBottomNavigationBarItem(
-          icon: Icons.bar_chart_rounded,
-          label: 'Ranking',
-        ),
-        _buildBottomNavigationBarItem(
-          icon: Icons.person_rounded,
-          label: 'Profile',
-        ),
-      ],
-    ),
-  );
-}
-
-// Helper method to create standard navigation bar items
-BottomNavigationBarItem _buildBottomNavigationBarItem({
-  required IconData icon,
-  required String label,
-}) {
-  return BottomNavigationBarItem(
-    icon: Icon(icon, size: 24),
-    activeIcon: Icon(icon, size: 28, color: Colors.white),
-    label: label,
-  );
-}
-
-// Special method to create a more prominent "Add" button
-BottomNavigationBarItem _buildSpecialAddButton() {
-  return BottomNavigationBarItem(
-    icon: Container(
+    return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.blueAccent, Colors.purpleAccent],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(12),
+        color: const Color(0xFF1A133E),
         boxShadow: [
           BoxShadow(
-            color: Colors.blueAccent.withOpacity(0.5),
-            spreadRadius: 2,
+            color: Colors.white.withOpacity(0.1),
+            spreadRadius: 1,
             blurRadius: 10,
-            offset: const Offset(0, 4),
+            offset: const Offset(0, -3),
           ),
         ],
       ),
-      padding: const EdgeInsets.all(10),
-      child: const Icon(
-        Icons.add_rounded,
-        color: Colors.white,
-        size: 28,
+      child: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white70,
+        selectedLabelStyle: const TextStyle(
+          fontFamily: 'Poppins',
+          fontWeight: FontWeight.bold,
+          fontSize: 10,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: 10,
+        ),
+        currentIndex: 2,
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Homepage()));
+              break;
+            case 1:
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const FilterKuisPage()));
+              break;
+            case 2:
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const TambahKuisPage()));
+              break;
+            case 3:
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PeringkatPage()));
+              break;
+            case 4:
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const ProfilPage()));
+              break;
+          }
+        },
+        items: [
+          _buildBottomNavigationBarItem(
+            icon: Icons.home_rounded,
+            label: 'Home',
+          ),
+          _buildBottomNavigationBarItem(
+            icon: Icons.search_rounded,
+            label: 'Filter',
+          ),
+          _buildSpecialAddButton(),
+          _buildBottomNavigationBarItem(
+            icon: Icons.bar_chart_rounded,
+            label: 'Ranking',
+          ),
+          _buildBottomNavigationBarItem(
+            icon: Icons.person_rounded,
+            label: 'Profile',
+          ),
+        ],
       ),
-    ),
-    label: '',
-  );
-}
+    );
+  }
+
+// Helper method to create standard navigation bar items
+  BottomNavigationBarItem _buildBottomNavigationBarItem({
+    required IconData icon,
+    required String label,
+  }) {
+    return BottomNavigationBarItem(
+      icon: Icon(icon, size: 24),
+      activeIcon: Icon(icon, size: 28, color: Colors.white),
+      label: label,
+    );
+  }
+
+// Special method to create a more prominent "Add" button
+  BottomNavigationBarItem _buildSpecialAddButton() {
+    return BottomNavigationBarItem(
+      icon: Container(
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Colors.amber, const Color.fromARGB(255, 210, 159, 5)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.amberAccent.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.all(10),
+        child: const Icon(
+          Icons.add_rounded,
+          color: Colors.white,
+          size: 28,
+        ),
+      ),
+      label: '',
+    );
+  }
 }

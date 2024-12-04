@@ -265,20 +265,12 @@ class _HomepageState extends State<Homepage> {
     return BottomNavigationBarItem(
       icon: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blueAccent, Colors.purpleAccent],
+          gradient: const LinearGradient(
+            colors: [Colors.amber, Color.fromARGB(255, 210, 159, 5)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.blueAccent.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
         ),
         padding: const EdgeInsets.all(10),
         child: const Icon(
