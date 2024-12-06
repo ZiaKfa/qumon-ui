@@ -1,11 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:qumon/bloc/kategori_bloc.dart';
 import 'package:qumon/ui/home_page.dart';
 import 'package:qumon/ui/peringkat_page.dart';
 import 'package:qumon/ui/profil_page.dart';
 import 'package:qumon/ui/tambah_kuis_page.dart';
 
-class FilterKuisPage extends StatelessWidget {
+class FilterKuisPage extends StatefulWidget {
   const FilterKuisPage({super.key});
+
+  @override
+  _FilterKuisPageState createState() => _FilterKuisPageState();
+}
+
+class _FilterKuisPageState extends State<FilterKuisPage> {
+  late Future<List> kategoriList;
+
+  @override
+  void initState() {
+    super.initState();
+    // Mengambil data kategori saat halaman dimuat
+    kategoriList = KategoriBloc().getKategori();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +50,7 @@ class FilterKuisPage extends StatelessWidget {
   Widget _buildTop(BuildContext context) {
     final mediaSize = MediaQuery.of(context).size;
     return Padding(
-      padding: const EdgeInsets.only(top: 16), // Menambahkan margin atas
+      padding: const EdgeInsets.only(top: 16),
       child: SizedBox(
         width: mediaSize.width,
         child: Column(
@@ -107,8 +122,7 @@ class FilterKuisPage extends StatelessWidget {
           padding: const EdgeInsets.only(top: 16),
           child: SizedBox(
             width: mediaSize.width,
-            height: mediaSize.height *
-                0.7, // Tetapkan tinggi tetap untuk bagian bawah
+            height: mediaSize.height * 0.7,
             child: Card(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -151,10 +165,74 @@ class FilterKuisPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: _buildQuizList(showAllQuizzes ? null : 4),
-                        ),
+                      child: FutureBuilder<List>(
+                        future: kategoriList, // Memanggil kategori dari API
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(
+                                child: Text('Error: ${snapshot.error}'));
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return const Center(
+                                child: Text('Tidak ada kategori'));
+                          } else {
+                            // Data kategori berhasil diambil, tampilkan di sini
+                            var categories = snapshot.data!;
+                            return SingleChildScrollView(
+                              child: Column(
+                                children: categories.map((category) {
+                                  return Card(
+                                    color: Colors.white,
+                                    margin: const EdgeInsets.only(bottom: 15),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: ListTile(
+                                      contentPadding: const EdgeInsets.all(16),
+                                      leading: ClipRRect(
+                                        borderRadius: BorderRadius.circular(15),
+                                        child: Image.asset(
+                                          'assets/images/kuis.jpg',
+                                          width: 60,
+                                          height: 60,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      title: Text(
+                                        category['name'],
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          fontFamily: 'Poppins',
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        "${category['quiz_count']} Kuis",
+                                        style: const TextStyle(
+                                          color: Color(0xFF858494),
+                                          fontSize: 12,
+                                          fontFamily: 'Poppins',
+                                        ),
+                                      ),
+                                      trailing: const Icon(
+                                        Icons.arrow_forward_ios,
+                                        size: 20,
+                                        color: Color(0xFF6A5AE0),
+                                      ),
+                                      onTap: () {
+                                        // Navigation logic
+                                      },
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            );
+                          }
+                        },
                       ),
                     ),
                   ],
@@ -165,107 +243,6 @@ class FilterKuisPage extends StatelessWidget {
         );
       },
     );
-  }
-
-  List<Widget> _buildQuizList(int? maxItems) {
-    // Data untuk daftar kuis
-    final quizzes = [
-      {
-        'title': 'Statistics Math Quiz',
-        'category': 'Math',
-        'count': 12,
-        'color': Colors.white,
-      },
-      {
-        'title': 'Statistics Math Quiz',
-        'category': 'Math',
-        'count': 12,
-        'color': Colors.white,
-      },
-      {
-        'title': 'Matrices Quiz',
-        'category': 'Math',
-        'count': 6,
-        'color': Colors.white,
-      },
-      {
-        'title': 'Matrices Quiz',
-        'category': 'Math',
-        'count': 6,
-        'color': Colors.white,
-      },
-      {
-        'title': 'Matrices Quiz',
-        'category': 'Math',
-        'count': 6,
-        'color': Colors.white,
-      },
-      {
-        'title': 'Matrices Quiz',
-        'category': 'Math',
-        'count': 6,
-        'color': Colors.white,
-      },
-      {
-        'title': 'Matrices Quiz',
-        'category': 'Math',
-        'count': 6,
-        'color': Colors.white,
-      },
-      {
-        'title': 'Matrices Quiz',
-        'category': 'Math',
-        'count': 6,
-        'color': Colors.white,
-      },
-      // Tambahkan lebih banyak kuis jika diperlukan
-    ];
-
-    // Jika maxItems tidak null, tampilkan hanya sejumlah item yang ditentukan
-    final displayedQuizzes =
-        maxItems != null ? quizzes.take(maxItems).toList() : quizzes;
-
-    return displayedQuizzes.map((quiz) {
-      return Card(
-        color: quiz['color'] as Color?,
-        margin: const EdgeInsets.only(bottom: 15),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: ListTile(
-          contentPadding: const EdgeInsets.all(16),
-          leading: Icon(
-            Icons.quiz,
-            color: Colors.blue[700],
-            size: 40,
-          ),
-          title: Text(
-            quiz['title'] as String,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-              fontFamily: 'Poppins',
-            ),
-          ),
-          subtitle: Text(
-            "${quiz['category']} • ${quiz['count']} Quizzes",
-            style: const TextStyle(
-              color: Color(0xFF858494),
-              fontSize: 12,
-              fontFamily: 'Poppins',
-            ),
-          ),
-          trailing: const Icon(
-            Icons.arrow_forward_ios,
-            size: 20,
-            color: Color(0xFF6A5AE0),
-          ),
-          onTap: () {
-            // Tambahkan fungsi navigasi ke detail kuis
-          },
-        ),
-      );
-    }).toList();
   }
 
   Widget _buildBottomNavigationBar(BuildContext context) {
@@ -367,8 +344,8 @@ class FilterKuisPage extends StatelessWidget {
     return BottomNavigationBarItem(
       icon: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.amber, const Color.fromARGB(255, 210, 159, 5)],
+          gradient: const LinearGradient(
+            colors: [Colors.amber, Color.fromARGB(255, 210, 159, 5)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),

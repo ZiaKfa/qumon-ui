@@ -10,135 +10,160 @@ class TambahKuisPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A133E), // Sesuai dengan tema
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: const Text(
-          "Soal",
-          style: TextStyle(
-            fontFamily: 'Poppins',
-            fontSize: 20,
-            color: Colors.white,
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/bg.png'),
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-        ),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Kategori",
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 16,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 8),
-            DropdownButtonFormField<String>(
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+          Column(
+            children: [
+              AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                 ),
-              ),
-              items: const [
-                DropdownMenuItem(value: "Math", child: Text("Math")),
-                DropdownMenuItem(value: "Science", child: Text("Science")),
-                DropdownMenuItem(value: "History", child: Text("History")),
-              ],
-              onChanged: (value) {
-                // Aksi saat kategori dipilih
-              },
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              "Soal",
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 16,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              maxLines: 4,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                title: const Text(
+                  "Tambah Soal",
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
                 ),
+                centerTitle: true,
               ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              "Jawaban",
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 16,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
-            const Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    side: const BorderSide(color: Colors.white),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+              Expanded(
+                child: Center(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            "Kategori",
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            items: const [
+                              DropdownMenuItem(
+                                  value: "Math", child: Text("Math")),
+                              DropdownMenuItem(
+                                  value: "Science", child: Text("Science")),
+                              DropdownMenuItem(
+                                  value: "History", child: Text("History")),
+                            ],
+                            onChanged: (value) {
+                              // Aksi saat kategori dipilih
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          const Text(
+                            "Soal",
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          TextField(
+                            maxLines: 4,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          const Text(
+                            "Jawaban",
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          TextField(
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 32),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  side: const BorderSide(color: Colors.white),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  // Aksi untuk tambah soal
+                                },
+                                child: const Text(
+                                  "Tambah",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFFFFC107),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  // Aksi untuk menyimpan soal
+                                },
+                                child: const Text(
+                                  "Simpan",
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  onPressed: () {
-                    // Aksi untuk tambah soal
-                  },
-                  child: const Text(
-                    "Tambah",
-                    style: TextStyle(color: Colors.white),
-                  ),
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFFC107),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  onPressed: () {
-                    // Aksi untuk menyimpan soal
-                  },
-                  child: const Text(
-                    "Simpan",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
       bottomNavigationBar: _buildBottomNavigationBar(context),
     );
@@ -226,7 +251,6 @@ class TambahKuisPage extends StatelessWidget {
     );
   }
 
-// Helper method to create standard navigation bar items
   BottomNavigationBarItem _buildBottomNavigationBarItem({
     required IconData icon,
     required String label,
@@ -238,13 +262,12 @@ class TambahKuisPage extends StatelessWidget {
     );
   }
 
-// Special method to create a more prominent "Add" button
   BottomNavigationBarItem _buildSpecialAddButton() {
     return BottomNavigationBarItem(
       icon: Container(
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [Colors.amber, const Color.fromARGB(255, 210, 159, 5)],
+            colors: [Colors.amber, Color.fromARGB(255, 210, 159, 5)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
