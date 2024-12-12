@@ -30,7 +30,7 @@ class _HomepageState extends State<Homepage> {
       {
         "author": "Author 1",
         "category": "Kategori 1",
-        "question": "Siapa nama pahlawan pada gambar 1?"
+        "question": "Tentukan himpunan penyelesaian dari persamaan kuadrat: 2x² - 5x - 12 = 0"
       },
       {
         "author": "Author 2",

@@ -16,7 +16,7 @@ class PeringkatPage extends StatefulWidget {
 }
 
 class _PeringkatPageState extends State<PeringkatPage> {
-  bool isWeeklySelected = true; // default to weekly
+  bool isWeeklySelected = true;
   List<dynamic> leaderboard = [];
   List<dynamic> weeklyLeaderboard = [];
 
@@ -37,9 +37,7 @@ class _PeringkatPageState extends State<PeringkatPage> {
         body: SafeArea(
           child: Column(
             children: [
-              // Bagian atas
               _buildTop(context),
-              // Expanded untuk memberi ruang bagi konten lainnya
               Expanded(
                 child: _buildBottom(context),
               ),

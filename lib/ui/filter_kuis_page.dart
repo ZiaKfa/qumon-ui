@@ -195,11 +195,10 @@ class _FilterKuisPageState extends State<FilterKuisPage> {
                                       contentPadding: const EdgeInsets.all(16),
                                       leading: ClipRRect(
                                         borderRadius: BorderRadius.circular(15),
-                                        child: Image.asset(
-                                          'assets/images/kuis.jpg',
-                                          width: 60,
-                                          height: 60,
-                                          fit: BoxFit.cover,
+                                        child: const Icon(
+                                          Icons.category,
+                                          size: 40,
+                                          color: Color(0xFF6A5AE0),
                                         ),
                                       ),
                                       title: Text(
@@ -211,7 +210,7 @@ class _FilterKuisPageState extends State<FilterKuisPage> {
                                         ),
                                       ),
                                       subtitle: Text(
-                                        "${category['quiz_count']} Kuis",
+                                        "2 Kuis",
                                         style: const TextStyle(
                                           color: Color(0xFF858494),
                                           fontSize: 12,
