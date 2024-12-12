@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qumon/helpers/api.dart';
 import 'package:qumon/helpers/api_url.dart';
+import 'package:qumon/helpers/user_info.dart';
 import 'package:qumon/ui/filter_kuis_page.dart';
 import 'package:qumon/ui/home_page.dart';
 import 'package:qumon/ui/profil_page.dart';
@@ -409,7 +410,10 @@ class _PeringkatPageState extends State<PeringkatPage> {
 
   Future<void> fetchRankingData() async {
     String url = ApiUrl.leaderboard;
-    var response = await Api().get(url);
+    var userName = await UserInfo.getName();
+    var password = await UserInfo.getPassword();
+    var basicAuth = base64Encode(utf8.encode('$userName:$password'));
+    var response = await Api().get(url,basicAuth);
     var jsonObj = jsonDecode(response.body);
     print(jsonObj);
     setState(() {
@@ -420,7 +424,10 @@ class _PeringkatPageState extends State<PeringkatPage> {
 
   Future<void> fetchWeeklyRankingData() async {
     String url = ApiUrl.weekly;
-    var response = await Api().get(url);
+    var userName = await UserInfo.getName();
+    var password = await UserInfo.getPassword();
+    var basicAuth = base64Encode(utf8.encode('$userName:$password'));
+    var response = await Api().get(url, basicAuth);
     var jsonObj = jsonDecode(response.body);
     print(jsonObj);
     setState(() {

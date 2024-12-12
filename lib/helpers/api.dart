@@ -1,15 +1,16 @@
-// ignore_for_file: unused_local_variable
-
 import 'package:http/http.dart' as http;
 import 'app_exception.dart';
 import 'dart:io';
 
 class Api {
-  Future<dynamic> get(dynamic url) async {
+  Future<dynamic> get(String url, String basicAuth) async {
     var responseJson;
     try {
       final response = await http.get(
         Uri.parse(url),
+        headers: {
+          'Authorization': 'Basic $basicAuth', // Ensure 'Basic ' prefix
+        },
       );
       responseJson = _returnResponse(response);
     } on SocketException {
@@ -18,12 +19,15 @@ class Api {
     return responseJson;
   }
 
-  Future<dynamic> post(dynamic url, dynamic body) async {
+  Future<dynamic> post(String url, dynamic body, String basicAuth) async {
     var responseJson;
     try {
       final response = await http.post(
         Uri.parse(url),
         body: body,
+        headers: {
+          'Authorization': 'Basic $basicAuth', // Ensure 'Basic ' prefix
+        },
       );
       responseJson = _returnResponse(response);
     } on SocketException {
@@ -32,12 +36,17 @@ class Api {
     return responseJson;
   }
 
-  Future<dynamic> put(dynamic url, dynamic body) async {
+  Future<dynamic> put(String url, dynamic body, String basicAuth) async {
     var responseJson;
     try {
-      final response = await http.put(Uri.parse(url), body: body, headers: {
-        'Content-Type': 'application/json',
-      });
+      final response = await http.put(
+        Uri.parse(url),
+        body: body,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic $basicAuth', // Ensure 'Basic ' prefix
+        },
+      );
       responseJson = _returnResponse(response);
     } on SocketException {
       throw FetchDataException('No Internet connection');
@@ -45,12 +54,16 @@ class Api {
     return responseJson;
   }
 
-  Future<dynamic> delete(dynamic url) async {
+  Future<dynamic> delete(String url, String basicAuth) async {
     var responseJson;
     try {
-      final response = await http.delete(Uri.parse(url), headers: {
-        'Content-Type': 'application/json',
-      });
+      final response = await http.delete(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic $basicAuth', // Ensure 'Basic ' prefix
+        },
+      );
       responseJson = _returnResponse(response);
     } on SocketException {
       throw FetchDataException('No Internet connection');
@@ -74,7 +87,7 @@ class Api {
       case 500:
       default:
         throw FetchDataException(
-            'Error occured while Communication with Server with StatusCode : ${response.statusCode}');
+            'Error occurred while Communication with Server with StatusCode: ${response.statusCode}');
     }
   }
 }

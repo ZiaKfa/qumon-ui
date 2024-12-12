@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qumon/bloc/login_bloc.dart';
+import 'package:qumon/helpers/user_info.dart';
 import 'package:qumon/ui/home_page.dart';
 import 'package:qumon/ui/registrasi_page.dart';
 
@@ -207,6 +208,7 @@ class _LoginPageState extends State<LoginPage> {
           password: _passwordController.text,
         ).then((value) async {
           if (value.status==true) {
+            UserInfo.login(_usernameController.text, _passwordController.text);
             Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => const Homepage()));
           } else {

@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:qumon/Model/login.dart';
+import 'package:qumon/helpers/login_or_not.dart';
+import 'package:qumon/helpers/user_info.dart';
 import 'package:qumon/ui/home_page.dart';
 import 'package:qumon/ui/login_page.dart';
 import 'package:qumon/ui/tambah_kuis_page.dart';
@@ -41,7 +43,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const LoginPage(),
+      home: LoginOrNot(),
     );
   }
 }

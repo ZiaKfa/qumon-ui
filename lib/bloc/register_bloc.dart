@@ -16,8 +16,9 @@ class RegistrasiBloc {
       "email": email,
       "password": password,
     };
+    var basicAuth = base64Encode(utf8.encode('$name:$password'));
 
-    var response = await Api().post(url, body);
+    var response = await Api().post(url, body, basicAuth);
     print("test di bloca");
     print(response.body);
     var jsonObj = json.decode(response.body);
