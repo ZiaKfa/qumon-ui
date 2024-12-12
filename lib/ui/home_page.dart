@@ -13,41 +13,26 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  List<Map<String, String?>> quizData = [];
+
   @override
   void initState() {
     super.initState();
     var quiz = QuizBloc().getQuiz();
 
     quiz.then((value) {
-      print(value.data);
+      setState(() {
+        quizData = value.data?.map((quiz) => {
+          "user": quiz.user,
+          "category": quiz.category,
+          "question": quiz.question,
+        }).toList() ?? [];
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Data dummy untuk looping
-    final List<Map<String, String>> quizData = [
-      {
-        "author": "Author 1",
-        "category": "Kategori 1",
-        "question": "Tentukan himpunan penyelesaian dari persamaan kuadrat: 2x² - 5x - 12 = 0"
-      },
-      {
-        "author": "Author 2",
-        "category": "Kategori 2",
-        "question": "Siapa nama pahlawan pada gambar 2?"
-      },
-      {
-        "author": "Author 3",
-        "category": "Kategori 3",
-        "question": "Siapa nama pahlawan pada gambar 3?"
-      },
-      {
-        "author": "Author 4",
-        "category": "Kategori 4",
-        "question": "Siapa nama pahlawan pada gambar 4?"
-      },
-    ];
 
     return Scaffold(
       body: Stack(
@@ -75,7 +60,7 @@ class _HomepageState extends State<Homepage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          data["author"] ?? "",
+                          data["user"] ?? "",
                           style: const TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 16,

@@ -37,6 +37,6 @@ class QuizData {
 
   @override
   String toString() {
-    return 'QuizData{id: $id, question: $question, user: $user, answer: $answer, category: $category}';
+    return '{id: $id, question: $question, user: $user, answer: $answer, category: $category}';
   }
 }
