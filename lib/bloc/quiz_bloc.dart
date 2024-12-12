@@ -16,7 +16,7 @@ class QuizBloc {
     print(basicAuth);
     var response = await Api().get(url,basicAuth);
     var jsonObj = json.decode(response.body);
-    print(jsonObj);
+    // print(jsonObj);
     return Quiz.fromJson(jsonObj);
   }
 }

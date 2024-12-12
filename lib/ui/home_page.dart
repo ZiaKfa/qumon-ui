@@ -14,138 +14,232 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   List<Map<String, String?>> quizData = [];
+  List<Map<String, String?>> displayedQuizData = [];
+  final int questionsPerLoad = 5;
+  int currentLoadedQuestions = 0;
+  bool isLoading = false;
+  bool hasMoreQuestions = true;
+  final PageController _pageController = PageController();
 
   @override
   void initState() {
     super.initState();
-    var quiz = QuizBloc().getQuiz();
+    _loadQuizData();
 
-    quiz.then((value) {
-      setState(() {
-        quizData = value.data?.map((quiz) => {
-          "user": quiz.user,
-          "category": quiz.category,
-          "question": quiz.question,
-        }).toList() ?? [];
+    // Add listener to handle automatic loading
+    _pageController.addListener(_onPageScroll);
+  }
+
+  void _onPageScroll() {
+    // Check if we're near the end of the current list and there are more questions
+    if (_pageController.position.pixels >=
+            _pageController.position.maxScrollExtent - 100 &&
+        hasMoreQuestions &&
+        !isLoading) {
+      _loadMoreQuestions();
+    }
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadQuizData() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      var quiz = QuizBloc().getQuiz();
+      quiz.then((value) {
+        setState(() {
+          // Simpan semua data quiz
+          quizData = value.data
+                  ?.map((quiz) => {
+                        "user": quiz.user,
+                        "category": quiz.category,
+                        "question": quiz.question,
+                      })
+                  .toList() ??
+              [];
+
+          // Muat pertanyaan pertama
+          _loadMoreQuestions();
+
+          isLoading = false;
+        });
       });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      print('Error loading quiz data: $e');
+    }
+  }
+
+  void _loadMoreQuestions() {
+    print('Loading more questions...');
+    // Hitung mulai dan akhir pertanyaan
+    int startIndex = currentLoadedQuestions;
+    int endIndex = startIndex + questionsPerLoad;
+
+    // Pastikan tidak melebihi total pertanyaan
+    endIndex = endIndex > quizData.length ? quizData.length : endIndex;
+
+    // Tambahkan pertanyaan baru
+    List<Map<String, String?>> newQuestions =
+        quizData.sublist(startIndex, endIndex);
+
+    setState(() {
+      displayedQuizData.addAll(newQuestions);
+      currentLoadedQuestions = endIndex;
+
+      // Periksa apakah masih ada pertanyaan
+      hasMoreQuestions = currentLoadedQuestions < quizData.length;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Stack(
         children: [
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("assets/images/bg.png"), // Path gambar
+                image: AssetImage("assets/images/bg.png"),
                 fit: BoxFit.cover,
               ),
             ),
           ),
-          PageView.builder(
-            scrollDirection: Axis.vertical,
-            itemCount: quizData.length, // Jumlah halaman sesuai data
-            itemBuilder: (context, index) {
-              final data = quizData[index]; // Data tiap item berdasarkan index
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0, vertical: 24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          data["user"] ?? "",
-                          style: const TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 16,
-                            color: Colors.white,
-                          ),
+          Column(
+            children: [
+              Expanded(
+                child: PageView.builder(
+                  controller: _pageController,
+                  scrollDirection: Axis.vertical,
+                  itemCount:
+                      displayedQuizData.length + (hasMoreQuestions ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    // If it's the last item and we have more questions, show loading
+                    if (index == displayedQuizData.length && hasMoreQuestions) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
                         ),
-                        Text(
-                          data["category"] ?? "",
-                          style: const TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 16,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Expanded(
+                      );
+                    }
+
+                    // Regular quiz item
+                    final data = displayedQuizData[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 24.0),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Center(
-                            child: Text(
-                              data["question"] ?? "",
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 18,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 24.0),
-                          TextField(
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              hintText: "Masukkan jawaban Anda",
-                              hintStyle: const TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 14,
-                                color: Colors.grey,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                borderSide: BorderSide.none,
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                vertical: 14.0,
-                                horizontal: 16.0,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 16.0),
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                // Aksi saat tombol "Cek" ditekan
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFFFFC107),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 14.0),
-                              ),
-                              child: const Text(
-                                "Cek",
-                                style: TextStyle(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                data["user"] ?? "",
+                                style: const TextStyle(
                                   fontFamily: 'Poppins',
                                   fontSize: 16,
-                                  color: Colors.black,
+                                  color: Colors.white,
                                 ),
                               ),
+                              Text(
+                                data["category"] ?? "",
+                                style: const TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Center(
+                                  child: Text(
+                                    data["question"] ?? "",
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 24.0),
+                                TextField(
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintText: "Masukkan jawaban Anda",
+                                    hintStyle: const TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 14,
+                                      color: Colors.grey,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 14.0,
+                                      horizontal: 16.0,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 16.0),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      // Aksi saat tombol "Cek" ditekan
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFFFFC107),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 14.0),
+                                    ),
+                                    child: const Text(
+                                      "Cek",
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
-              );
-            },
+              ),
+            ],
           ),
+          // Remove the separate Loading indicator as it's now integrated
+          if (isLoading && displayedQuizData.isEmpty)
+            const Center(
+              child: CircularProgressIndicator(
+                color: Colors.white,
+              ),
+            ),
         ],
       ),
       bottomNavigationBar: _buildBottomNavigationBar(context),

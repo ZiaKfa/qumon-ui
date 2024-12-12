@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qumon/bloc/logout_bloc.dart';
+import 'package:qumon/helpers/user_info.dart';
 import 'package:qumon/ui/filter_kuis_page.dart';
 import 'package:qumon/ui/home_page.dart';
 import 'package:qumon/ui/login_page.dart';
@@ -24,7 +25,18 @@ class ProfilPage extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 25),
-              _buildTop(context),
+              FutureBuilder<Widget>(
+                future: _buildTop(context),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return const Text('Error');
+                  } else {
+                    return snapshot.data!;
+                  }
+                },
+              ),
               const SizedBox(height: 20),
               _buildUserStatistics(),
               const SizedBox(height: 20),
@@ -39,7 +51,7 @@ class ProfilPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTop(BuildContext context) {
+  Future<Widget> _buildTop(BuildContext context) async {
     return Column(
       children: [
         Padding(
@@ -142,14 +154,33 @@ class ProfilPage extends StatelessWidget {
         ),
         const SizedBox(height: 30),
         const SizedBox(height: 15),
-        const Text(
-          "Nama Pengguna",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'Poppins',
-          ),
+        FutureBuilder<String?>(
+          future: UserInfo.getName(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return const Text(
+                'Error',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Poppins',
+                ),
+              );
+            } else {
+              return Text(
+                snapshot.data ?? 'Unknown',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Poppins',
+                ),
+              );
+            }
+          },
         ),
       ],
     );

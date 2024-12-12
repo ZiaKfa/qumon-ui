@@ -152,11 +152,10 @@ class _FilterKuisPageState extends State<FilterKuisPage> {
                               showAllQuizzes = !showAllQuizzes;
                             });
                           },
-                          child: const Text(
-                            "Lihat semua",
-                            style: TextStyle(
+                          child: Text(
+                            showAllQuizzes ? 'Show Less' : 'Show All',
+                            style: const TextStyle(
                               color: Color(0xFF6A5AE0),
-                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

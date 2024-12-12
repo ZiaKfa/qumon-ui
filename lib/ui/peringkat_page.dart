@@ -17,14 +17,14 @@ class PeringkatPage extends StatefulWidget {
 }
 
 class _PeringkatPageState extends State<PeringkatPage> {
-  bool isWeeklySelected = true;
+  bool isWeeklySelected = true; // default to weekly
   List<dynamic> leaderboard = [];
   List<dynamic> weeklyLeaderboard = [];
 
   @override
   void initState() {
     super.initState();
-    fetchWeeklyRankingData();    
+    fetchWeeklyRankingData();
   }
 
   @override
@@ -38,7 +38,9 @@ class _PeringkatPageState extends State<PeringkatPage> {
         body: SafeArea(
           child: Column(
             children: [
+              // Bagian atas
               _buildTop(context),
+              // Expanded untuk memberi ruang bagi konten lainnya
               Expanded(
                 child: _buildBottom(context),
               ),
@@ -213,7 +215,35 @@ class _PeringkatPageState extends State<PeringkatPage> {
 
   List<Widget> _buildRankingList() {
     List<dynamic> rankings = isWeeklySelected ? weeklyLeaderboard : leaderboard;
-    
+
+    // Jika data belum termuat, tampilkan indikator loading
+    if (rankings.isEmpty) {
+      return [
+        FutureBuilder(
+          future: Future.delayed(const Duration(seconds: 2)),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.amber,
+                ),
+              );
+            } else {
+              return const Center(
+                child: Text(
+                  "Peringkat belum tersedia saat ini",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontFamily: 'Poppins',
+                  ),
+                ),
+              );
+            }
+          },
+        ),
+      ];
+    }
 
     return rankings.map((user) {
       int rank = rankings.indexOf(user) + 1;
@@ -259,7 +289,7 @@ class _PeringkatPageState extends State<PeringkatPage> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        "${user['total_correct_answer']} points",
+                        "${user['total_correct_answer'] * 5} points",
                         style: const TextStyle(
                           color: Color(0xFF858494),
                           fontSize: 12,
@@ -287,8 +317,6 @@ class _PeringkatPageState extends State<PeringkatPage> {
         ),
       );
     }).toList();
-    // ignore: dead_code
-    return [];
   }
 
   Widget _buildBottomNavigationBar(BuildContext context) {
@@ -409,24 +437,23 @@ class _PeringkatPageState extends State<PeringkatPage> {
   }
 
   Future<void> fetchRankingData() async {
-    String url = ApiUrl.leaderboard;
-    var userName = await UserInfo.getName();
+    var username = await UserInfo.getName();
     var password = await UserInfo.getPassword();
-    var basicAuth = base64Encode(utf8.encode('$userName:$password'));
-    var response = await Api().get(url,basicAuth);
+    var basicAuth = base64Encode(utf8.encode('$username:$password'));
+    String url = ApiUrl.leaderboard;
+    var response = await Api().get(url, basicAuth);
     var jsonObj = jsonDecode(response.body);
     print(jsonObj);
     setState(() {
       leaderboard = jsonObj['data'] as List<dynamic>;
     });
   }
-  
 
   Future<void> fetchWeeklyRankingData() async {
     String url = ApiUrl.weekly;
-    var userName = await UserInfo.getName();
+    var username = await UserInfo.getName();
     var password = await UserInfo.getPassword();
-    var basicAuth = base64Encode(utf8.encode('$userName:$password'));
+    var basicAuth = base64Encode(utf8.encode('$username:$password'));
     var response = await Api().get(url, basicAuth);
     var jsonObj = jsonDecode(response.body);
     print(jsonObj);
