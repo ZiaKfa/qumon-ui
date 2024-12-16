@@ -3,6 +3,7 @@ import 'package:qumon/bloc/login_bloc.dart';
 import 'package:qumon/helpers/user_info.dart';
 import 'package:qumon/ui/home_page.dart';
 import 'package:qumon/ui/registrasi_page.dart';
+import 'package:qumon/widget/gagal.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -31,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
       child: Scaffold(
-        resizeToAvoidBottomInset: true, 
+        resizeToAvoidBottomInset: true,
         backgroundColor: const Color.fromARGB(86, 35, 41, 98),
         body: SingleChildScrollView(
           child: ConstrainedBox(
@@ -41,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
             child: IntrinsicHeight(
               child: Column(
                 children: [
-                  const SizedBox(height: 80), 
+                  const SizedBox(height: 80),
                   _buildTop(),
                   const Spacer(),
                   _buildBottom(),
@@ -88,37 +89,36 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildForm() {
-  return Form(
-    key: _formKey,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const Text(
-          "Selamat Datang!",
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 22,
-            fontWeight: FontWeight.w600,
-            fontFamily: 'Poppins',
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            "Selamat Datang!",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 22,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Poppins',
+            ),
           ),
-        ),
-        _buildText("Masuk untuk memulai tantangan seru!"),
-        const SizedBox(height: 40),
-        _buildText("Username"),
-        _usernameTextField(),
-        const SizedBox(height: 30),
-        _buildText("Password"),
-        _passwordTextField(),
-        const SizedBox(height: 30),
-        _loginButton(),
-        const SizedBox(height: 20),
-        _linkToRegister(),
-      ],
-    ),
-  );
-}
-
+          _buildText("Masuk untuk memulai tantangan seru!"),
+          const SizedBox(height: 40),
+          _buildText("Username"),
+          _usernameTextField(),
+          const SizedBox(height: 30),
+          _buildText("Password"),
+          _passwordTextField(),
+          const SizedBox(height: 30),
+          _loginButton(),
+          const SizedBox(height: 20),
+          _linkToRegister(),
+        ],
+      ),
+    );
+  }
 
   Widget _buildText(String text, {double fontSize = 14}) {
     return Text(
@@ -173,53 +173,74 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _loginButton() {
-    return ElevatedButton(
-      onPressed: () {
-        if(_formKey.currentState!.validate()){
-          if(!isLoading){
-             _login();
-          }
-        }
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.black,
-        shape: const StadiumBorder(),
-        elevation: 20,
-        minimumSize: const Size.fromHeight(60),
-      ),
-      child: const Text(
-        "Login",
-        style: TextStyle(
-          color: Color.fromARGB(255, 255, 255, 255),
-          fontSize: 16,
-          fontFamily: 'Poppins',
-        ),
-      ),
-    );
+    return isLoading
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : ElevatedButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                if (!isLoading) {
+                  _login();
+                }
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              shape: const StadiumBorder(),
+              elevation: 20,
+              minimumSize: const Size.fromHeight(60),
+            ),
+            child: const Text(
+              "Login",
+              style: TextStyle(
+                color: Color.fromARGB(255, 255, 255, 255),
+                fontSize: 16,
+                fontFamily: 'Poppins',
+              ),
+            ),
+          );
   }
 
-    void _login(){
-        _formKey.currentState!.save();
-        setState((){
-          isLoading = true;
+  void _login() {
+    _formKey.currentState!.save();
+    setState(() {
+      isLoading = true;
+    });
+    LoginBloc.login(
+      name: _usernameController.text,
+      password: _passwordController.text,
+    ).then((value) async {
+      print(value.userID);
+      if (value.status == true) {
+        UserInfo.setId(value.userID!);
+        UserInfo.login(_usernameController.text, _passwordController.text);
+        var userId = await UserInfo.getId();
+        print(userId);
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => const Homepage()));
+      } else {
+        setState(() {
+          isLoading = false;
         });
-        LoginBloc.login(
-          name: _usernameController.text,
-          password: _passwordController.text,
-        ).then((value) async {
-          if (value.status==true) {
-            UserInfo.login(_usernameController.text, _passwordController.text);
-            Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const Homepage()));
-          } else {
-            print(value.status);
-          }
-        }, onError: (error) {
-          print(error);
-        }
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return FailureModal(
+              title: "Login Gagal",
+              message:
+                  'Gagal masuk. Silakan periksa kembali username dan password Anda.',
+              onClose: () {
+                Navigator.of(context).pop();
+              },
+            );
+          },
         );
       }
-   
+    }, onError: (error) {
+      print(error);
+    });
+  }
 
   Widget _linkToRegister() {
     return Row(
@@ -229,7 +250,7 @@ class _LoginPageState extends State<LoginPage> {
           "Belum punya akun? ",
           style: TextStyle(
               color: Colors.black,
-              fontSize: 14, 
+              fontSize: 14,
               fontFamily: 'Poppins',
               fontWeight: FontWeight.w400),
         ),
@@ -244,7 +265,7 @@ class _LoginPageState extends State<LoginPage> {
             "Daftar",
             style: TextStyle(
                 color: Colors.blue,
-                fontSize: 14, 
+                fontSize: 14,
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w400),
           ),

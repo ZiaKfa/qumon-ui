@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserInfo {
@@ -7,9 +9,20 @@ class UserInfo {
     pref.setString("password", password);
     pref.setBool("isLogin", true);
   }
+
   Future logout() async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
     pref.clear();
+  }
+
+  static Future<void> setId(int id) async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setInt("id", id);
+  }
+
+  static Future<int?> getId() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    return pref.getInt("id");
   }
 
   static Future<String?> getName() async {
@@ -25,5 +38,9 @@ class UserInfo {
   static Future<bool> isLogin() async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
     return pref.getBool("isLogin") ?? false;
+  }
+
+  static getAuth() {
+    return base64Encode(utf8.encode('nggih:nggihmas'));
   }
 }

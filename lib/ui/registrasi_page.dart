@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:qumon/bloc/register_bloc.dart';
 import 'package:qumon/ui/login_page.dart';
+import 'package:qumon/widget/gagal.dart';
+import 'package:qumon/widget/sukses.dart';
 
 class RegistrasiPage extends StatefulWidget {
   const RegistrasiPage({Key? key}) : super(key: key);
@@ -160,9 +162,11 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
       keyboardType: TextInputType.text,
       controller: _usernameController,
       validator: (value) {
-        if (value!.length < 3) {
-          return "Nama harus diisi minimal 3 karakter";
-        }
+        if (value!.isEmpty) {
+          return "Username tidak boleh kosong";
+        } else if (value.length < 3) {
+          return "Username harus diisi minimal 3 karakter";
+        } 
         return null;
       },
     );
@@ -175,8 +179,9 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
       keyboardType: TextInputType.text,
       controller: _emailController,
       validator: (value) {
-        if (value!.length < 3) {
-          return "Email harus diisi minimal 3 karakter";
+        final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
+        if (!emailRegex.hasMatch(value!)) {
+          return "Email tidak valid";
         }
         return null;
       },
@@ -201,8 +206,8 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
       obscureText: !_passwordVisible,
       controller: _passwordController,
       validator: (value) {
-        if (value!.length < 6) {
-          return "Password harus diisi minimal 6 karakter";
+        if (value!.length < 8) {
+          return "Password harus diisi minimal 8 karakter";
         }
         return null;
       },
@@ -237,7 +242,11 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
 
   final myColor = Colors.blue;
   Widget _registrasiButton() {
-    return ElevatedButton(
+    return _isLoading
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : ElevatedButton(
       onPressed: () {
         print("test");
         var validate = _formKey.currentState!.validate();
@@ -266,17 +275,72 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
     setState(() {
       _isLoading = true;
     });
-    print("test");
+
     RegistrasiBloc.registrasi(
       name: _usernameController.text,
       email: _emailController.text,
       password: _passwordController.text,
     ).then((value) async {
-      print("test");
+      // Hentikan loading
+      setState(() {
+        _isLoading = false;
+      });
+
       if (value.success == true) {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const LoginPage()));
-      } else {}
+        setState(() {
+          _isLoading = false;
+        });
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return SuccessModal(
+              title: "Registrasi Berhasil",
+              message: "Akun Anda berhasil dibuat. Silakan login.",
+              onClose: () {
+                Navigator.of(context).pop(); // Tutup modal
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()));
+              },
+            );
+          },
+        );
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return FailureModal(
+              title: "Registrasi Gagal",
+              message:
+                  value.message ?? 'Gagal membuat akun. Silakan coba lagi.',
+              onClose: () {
+                Navigator.of(context).pop(); // Tutup modal
+              },
+            );
+          },
+        );
+      }
+    }).catchError((error) {
+      // Tangani error
+      setState(() {
+        _isLoading = false;
+      });
+
+      // Modal Error
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return FailureModal(
+            title: "Error",
+            message: 'Terjadi kesalahan: $error',
+            onClose: () {
+              Navigator.of(context).pop(); // Tutup modal
+            },
+          );
+        },
+      );
     });
   }
 }

@@ -7,4 +7,6 @@ class ApiUrl {
   static const String kategori = baseUrl + '/kategori';
   static const String leaderboard = baseUrl + '/leaderboard';
   static const String weekly = leaderboard + '/weekly';
+  static const String answer = baseUrl + '/answer';
+  static const String userAnswer = baseUrl + '/useranswer';
 }

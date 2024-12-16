@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:qumon/bloc/quiz_bloc.dart';
+import 'package:qumon/bloc/user_answer_bloc.dart';
+import 'package:qumon/helpers/user_info.dart';
 import 'package:qumon/ui/filter_kuis_page.dart';
 import 'package:qumon/ui/peringkat_page.dart';
 import 'package:qumon/ui/profil_page.dart';
 import 'package:qumon/ui/tambah_kuis_page.dart';
+import 'package:qumon/widget/gagal.dart';
+import 'package:qumon/widget/sukses.dart';
+import 'package:qumon/widget/warning.dart';
+import 'package:string_similarity/string_similarity.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({Key? key}) : super(key: key);
@@ -20,6 +26,8 @@ class _HomepageState extends State<Homepage> {
   bool isLoading = false;
   bool hasMoreQuestions = true;
   final PageController _pageController = PageController();
+
+  final quizTextController = TextEditingController();
 
   @override
   void initState() {
@@ -38,6 +46,7 @@ class _HomepageState extends State<Homepage> {
         !isLoading) {
       _loadMoreQuestions();
     }
+    quizTextController.clear();
   }
 
   @override
@@ -58,9 +67,11 @@ class _HomepageState extends State<Homepage> {
           // Simpan semua data quiz
           quizData = value.data
                   ?.map((quiz) => {
+                        "id": quiz.id.toString(),
                         "user": quiz.user,
                         "category": quiz.category,
                         "question": quiz.question,
+                        "answer": quiz.answer,
                       })
                   .toList() ??
               [];
@@ -80,7 +91,6 @@ class _HomepageState extends State<Homepage> {
   }
 
   void _loadMoreQuestions() {
-    print('Loading more questions...');
     // Hitung mulai dan akhir pertanyaan
     int startIndex = currentLoadedQuestions;
     int endIndex = startIndex + questionsPerLoad;
@@ -178,6 +188,7 @@ class _HomepageState extends State<Homepage> {
                                 ),
                                 const SizedBox(height: 24.0),
                                 TextField(
+                                  controller: quizTextController,
                                   decoration: InputDecoration(
                                     filled: true,
                                     fillColor: Colors.white,
@@ -201,8 +212,67 @@ class _HomepageState extends State<Homepage> {
                                 SizedBox(
                                   width: double.infinity,
                                   child: ElevatedButton(
-                                    onPressed: () {
-                                      // Aksi saat tombol "Cek" ditekan
+                                    onPressed: () async {
+                                      var similarity = quizTextController.text.toLowerCase()
+                                          .similarityTo(data["answer"]?.toLowerCase() ?? "");
+                                      if(similarity >0.6 && similarity < 1){
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => WarningModal(
+                                            title: 'Peringatan!',
+                                            message: 'Jawabanmu hampir benar! \n Coba lagi!',
+                                            onClose: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        );
+                                      } else {
+                                            var is_correct = data["answer"]
+                                              ?.toLowerCase() ==
+                                          quizTextController.text.toLowerCase();
+                                      UserAnswerBloc().addAnswer(
+                                          int.parse(data["id"] ?? ""),
+                                          await UserInfo.getId(),
+                                          quizTextController.text,
+                                          is_correct);
+                                      if (is_correct) {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => SuccessModal(
+                                            title: 'Benar!',
+                                            message: 'Jawabanmu benar!',
+                                            onClose: () {
+                                              setState(() {
+                                                displayedQuizData.removeAt(
+                                                    displayedQuizData
+                                                        .indexOf(data));
+                                                quizTextController.clear();
+                                              });
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        );
+                                      } else {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => FailureModal(
+                                            title: '  Salah',
+                                            message:
+                                                'Jawabanmu masih salah! \n Jawaban yang benar adalah ${data["answer"]}',
+                                            onClose: () {
+                                              setState(() {
+                                                displayedQuizData.removeAt(
+                                                    displayedQuizData
+                                                        .indexOf(data));
+                                                quizTextController.clear();
+                                              });
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        );
+                                      }
+                                      }
+
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFFFFC107),

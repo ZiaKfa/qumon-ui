@@ -5,9 +5,7 @@ import 'package:qumon/helpers/user_info.dart';
 
 class KategoriBloc {
   Future<List> getKategori() async {
-    var userName = await UserInfo.getName();
-    var password = await UserInfo.getPassword();
-    var basicAuth = base64Encode(utf8.encode('$userName:$password'));
+    var basicAuth = await UserInfo.getAuth();
     var response = await Api().get(ApiUrl.kategori, basicAuth);
     if (response.statusCode == 200) {
       var data = json.decode(response.body);

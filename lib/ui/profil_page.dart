@@ -1,14 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:qumon/bloc/kategori_bloc.dart';
 import 'package:qumon/bloc/logout_bloc.dart';
 import 'package:qumon/helpers/user_info.dart';
+import 'package:qumon/ui/kuis_list_page.dart';
 import 'package:qumon/ui/filter_kuis_page.dart';
 import 'package:qumon/ui/home_page.dart';
 import 'package:qumon/ui/login_page.dart';
 import 'package:qumon/ui/peringkat_page.dart';
 import 'package:qumon/ui/tambah_kuis_page.dart';
 
-class ProfilPage extends StatelessWidget {
+class ProfilPage extends StatefulWidget {
   const ProfilPage({super.key});
+
+  @override
+  _ProfilPageState createState() => _ProfilPageState();
+}
+
+class _ProfilPageState extends State<ProfilPage> {
+  late Future<List> kategoriList;
+
+  @override
+  void initState() {
+    super.initState();
+    // Mengambil data kategori saat halaman dimuat
+    kategoriList = KategoriBloc().getKategori();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +58,7 @@ class ProfilPage extends StatelessWidget {
               const SizedBox(height: 20),
               _buildMyStatistics(),
               const SizedBox(height: 50),
-              _buildQuizList(),
+              _buildQuizList(context),
             ],
           ),
         ),
@@ -351,58 +367,7 @@ class ProfilPage extends StatelessWidget {
     );
   }
 
-  Widget _buildQuizList() {
-    final quizzes = [
-      {
-        'title': 'Statistics Math Quiz',
-        'category': 'Math',
-        'count': 12,
-        'color': Colors.white,
-      },
-      {
-        'title': 'Statistics Math Quiz',
-        'category': 'Math',
-        'count': 12,
-        'color': Colors.white,
-      },
-      {
-        'title': 'Matrices Quiz',
-        'category': 'Math',
-        'count': 6,
-        'color': Colors.white,
-      },
-      {
-        'title': 'Matrices Quiz',
-        'category': 'Math',
-        'count': 6,
-        'color': Colors.white,
-      },
-      {
-        'title': 'Matrices Quiz',
-        'category': 'Math',
-        'count': 6,
-        'color': Colors.white,
-      },
-      {
-        'title': 'Matrices Quiz',
-        'category': 'Math',
-        'count': 6,
-        'color': Colors.white,
-      },
-      {
-        'title': 'Matrices Quiz',
-        'category': 'Math',
-        'count': 6,
-        'color': Colors.white,
-      },
-      {
-        'title': 'Matrices Quiz',
-        'category': 'Math',
-        'count': 6,
-        'color': Colors.white,
-      },
-    ];
-
+  Widget _buildQuizList(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -419,50 +384,81 @@ class ProfilPage extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 20),
-        ...quizzes.map((quiz) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Card(
-              color: quiz['color'] as Color?,
-              margin: const EdgeInsets.only(bottom: 15),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(16),
-                leading: Icon(
-                  Icons.quiz,
-                  color: Colors.blue[700],
-                  size: 40,
+        FutureBuilder<List>(
+          future: kategoriList,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text(
+                  'Error: ${snapshot.error}',
+                  style: const TextStyle(color: Colors.white),
                 ),
-                title: Text(
-                  quiz['title'] as String,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    fontFamily: 'Poppins',
-                  ),
+              );
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(
+                child: Text(
+                  'Tidak ada kategori',
+                  style: TextStyle(color: Colors.white),
                 ),
-                subtitle: Text(
-                  "${quiz['category']} • ${quiz['count']} Quizzes",
-                  style: const TextStyle(
-                    color: Color(0xFF858494),
-                    fontSize: 12,
-                    fontFamily: 'Poppins',
-                  ),
-                ),
-                trailing: const Icon(
-                  Icons.arrow_forward_ios,
-                  size: 20,
-                  color: Color(0xFF6A5AE0),
-                ),
-                onTap: () {
-                  // Tambahkan fungsi navigasi ke detail kuis
-                },
-              ),
-            ),
-          );
-        }),
+              );
+            } else {
+              return Column(
+                children: snapshot.data!.map((category) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Card(
+                      color: Colors.white,
+                      margin: const EdgeInsets.only(bottom: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.all(16),
+                        leading: Icon(
+                          Icons.category,
+                          color: Colors.blue[700],
+                          size: 40,
+                        ),
+                        title: Text(
+                          category['name'] ?? 'Kategori Tidak Dikenal',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            fontFamily: 'Poppins',
+                          ),
+                        ),
+                        subtitle: Text(
+                          "Kategori Quiz",
+                          style: const TextStyle(
+                            color: Color(0xFF858494),
+                            fontSize: 12,
+                            fontFamily: 'Poppins',
+                          ),
+                        ),
+                        trailing: const Icon(
+                          Icons.arrow_forward_ios,
+                          size: 20,
+                          color: Color(0xFF6A5AE0),
+                        ),
+                        onTap: () {
+                          // You can add navigation or action when a category is tapped
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => KuisListPage(),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                }).toList(),
+              );
+            }
+          },
+        ),
       ],
     );
   }

@@ -437,9 +437,7 @@ class _PeringkatPageState extends State<PeringkatPage> {
   }
 
   Future<void> fetchRankingData() async {
-    var username = await UserInfo.getName();
-    var password = await UserInfo.getPassword();
-    var basicAuth = base64Encode(utf8.encode('$username:$password'));
+    var basicAuth = await UserInfo.getAuth();
     String url = ApiUrl.leaderboard;
     var response = await Api().get(url, basicAuth);
     var jsonObj = jsonDecode(response.body);
@@ -451,9 +449,7 @@ class _PeringkatPageState extends State<PeringkatPage> {
 
   Future<void> fetchWeeklyRankingData() async {
     String url = ApiUrl.weekly;
-    var username = await UserInfo.getName();
-    var password = await UserInfo.getPassword();
-    var basicAuth = base64Encode(utf8.encode('$username:$password'));
+    var basicAuth = await UserInfo.getAuth();
     var response = await Api().get(url, basicAuth);
     var jsonObj = jsonDecode(response.body);
     print(jsonObj);
