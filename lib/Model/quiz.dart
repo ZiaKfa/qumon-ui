@@ -14,6 +14,8 @@ class Quiz {
           .toList(),
     );
   }
+
+  int? get kategoriId => null;
 }
 
 class QuizData {

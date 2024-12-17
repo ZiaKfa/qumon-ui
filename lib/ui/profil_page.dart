@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:qumon/bloc/kategori_bloc.dart';
 import 'package:qumon/bloc/logout_bloc.dart';
+import 'package:qumon/helpers/api.dart';
+import 'package:qumon/helpers/api_url.dart';
 import 'package:qumon/helpers/user_info.dart';
 import 'package:qumon/ui/kuis_list_page.dart';
 import 'package:qumon/ui/filter_kuis_page.dart';
@@ -18,11 +22,14 @@ class ProfilPage extends StatefulWidget {
 
 class _ProfilPageState extends State<ProfilPage> {
   late Future<List> kategoriList;
-
+  List<dynamic> leaderboard = [];
+  List<dynamic> weeklyLeaderboard = [];
   @override
   void initState() {
     super.initState();
     // Mengambil data kategori saat halaman dimuat
+    fetchRankingData();
+    fetchWeeklyRankingData();
     kategoriList = KategoriBloc().getKategori();
   }
 
@@ -54,10 +61,10 @@ class _ProfilPageState extends State<ProfilPage> {
                 },
               ),
               const SizedBox(height: 20),
-              _buildUserStatistics(),
-              const SizedBox(height: 20),
-              _buildMyStatistics(),
-              const SizedBox(height: 50),
+              // _buildUserStatistics(),
+              // const SizedBox(height: 20),
+              // _buildMyStatistics(),
+              // const SizedBox(height: 50),
               _buildQuizList(context),
             ],
           ),
@@ -214,9 +221,11 @@ class _ProfilPageState extends State<ProfilPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildStatisticItem(Icons.star, "SKOR", "590"),
-            _buildStatisticItem(Icons.public, "PERINGKAT", "#138"),
-            _buildStatisticItem(Icons.autorenew, "MINGGUAN", "#56"),
+            _buildStatisticItem(
+                Icons.star, "SKOR", getUserCorrectAnswer().toString()),
+            _buildStatisticItem(Icons.public, "PERINGKAT", "#${getUserRank()}"),
+            _buildStatisticItem(
+                Icons.autorenew, "MINGGUAN", "#${getUserWeeklyRank()}"),
           ],
         ),
       ),
@@ -252,120 +261,120 @@ class _ProfilPageState extends State<ProfilPage> {
     );
   }
 
-  Widget _buildMyStatistics() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 30),
-          const Text(
-            "Statistik Saya",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 30),
-          const Center(
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                SizedBox(
-                  width: 120,
-                  height: 120,
-                  child: CircularProgressIndicator(
-                    value: 37 / 50,
-                    strokeWidth: 15,
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(Color(0xFFFCC822)),
-                    backgroundColor: Color.fromARGB(255, 219, 219, 219),
-                  ),
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "37/50",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Poppins',
-                      ),
-                    ),
-                    Text(
-                      "Kuis dikerjakan",
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 12,
-                        fontFamily: 'Poppins',
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 40),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildStatisticCard("5", "Kuis dibuat", Icons.edit, Colors.white),
-              const SizedBox(width: 20),
-              _buildStatisticCard(
-                  "21", "Kuis benar", Icons.check, const Color(0xFFFCC822)),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildMyStatistics() {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(horizontal: 20),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         const SizedBox(height: 30),
+  //         const Text(
+  //           "Statistik Saya",
+  //           style: TextStyle(
+  //             color: Colors.white,
+  //             fontSize: 18,
+  //             fontFamily: 'Poppins',
+  //             fontWeight: FontWeight.bold,
+  //           ),
+  //         ),
+  //         const SizedBox(height: 30),
+  //         const Center(
+  //           child: Stack(
+  //             alignment: Alignment.center,
+  //             children: [
+  //               SizedBox(
+  //                 width: 120,
+  //                 height: 120,
+  //                 child: CircularProgressIndicator(
+  //                   value: 37 / 50,
+  //                   strokeWidth: 15,
+  //                   valueColor:
+  //                       AlwaysStoppedAnimation<Color>(Color(0xFFFCC822)),
+  //                   backgroundColor: Color.fromARGB(255, 219, 219, 219),
+  //                 ),
+  //               ),
+  //               Column(
+  //                 mainAxisAlignment: MainAxisAlignment.center,
+  //                 children: [
+  //                   Text(
+  //                     "37/50",
+  //                     style: TextStyle(
+  //                       color: Colors.white,
+  //                       fontSize: 20,
+  //                       fontWeight: FontWeight.bold,
+  //                       fontFamily: 'Poppins',
+  //                     ),
+  //                   ),
+  //                   Text(
+  //                     "Kuis dikerjakan",
+  //                     style: TextStyle(
+  //                       color: Colors.white70,
+  //                       fontSize: 12,
+  //                       fontFamily: 'Poppins',
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //         const SizedBox(height: 40),
+  //         Row(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: [
+  //             _buildStatisticCard("5", "Kuis dibuat", Icons.edit, Colors.white),
+  //             const SizedBox(width: 20),
+  //             _buildStatisticCard(
+  //                 "21", "Kuis benar", Icons.check, const Color(0xFFFCC822)),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget _buildStatisticCard(
-      String value, String label, IconData icon, Color color) {
-    return Container(
-      width: 140,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                value,
-                style: TextStyle(
-                  color: color == Colors.white ? Colors.black : Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Poppins',
-                ),
-              ),
-              Icon(
-                icon,
-                color: color == Colors.white ? Colors.black : Colors.white,
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: TextStyle(
-              color: color == Colors.white ? Colors.black : Colors.white,
-              fontSize: 14,
-              fontFamily: 'Poppins',
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildStatisticCard(
+  //     String value, String label, IconData icon, Color color) {
+  //   return Container(
+  //     width: 140,
+  //     padding: const EdgeInsets.all(16),
+  //     decoration: BoxDecoration(
+  //       color: color,
+  //       borderRadius: BorderRadius.circular(16),
+  //     ),
+  //     child: Column(
+  //       children: [
+  //         Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             Text(
+  //               value,
+  //               style: TextStyle(
+  //                 color: color == Colors.white ? Colors.black : Colors.white,
+  //                 fontSize: 24,
+  //                 fontWeight: FontWeight.bold,
+  //                 fontFamily: 'Poppins',
+  //               ),
+  //             ),
+  //             Icon(
+  //               icon,
+  //               color: color == Colors.white ? Colors.black : Colors.white,
+  //             ),
+  //           ],
+  //         ),
+  //         const SizedBox(height: 8),
+  //         Text(
+  //           label,
+  //           style: TextStyle(
+  //             color: color == Colors.white ? Colors.black : Colors.white,
+  //             fontSize: 14,
+  //             fontFamily: 'Poppins',
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildQuizList(BuildContext context) {
     return Column(
@@ -429,9 +438,9 @@ class _ProfilPageState extends State<ProfilPage> {
                             fontFamily: 'Poppins',
                           ),
                         ),
-                        subtitle: Text(
+                        subtitle: const Text(
                           "Kategori Quiz",
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Color(0xFF858494),
                             fontSize: 12,
                             fontFamily: 'Poppins',
@@ -447,7 +456,8 @@ class _ProfilPageState extends State<ProfilPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => KuisListPage(category["name"],category["id"]),
+                              builder: (context) => KuisListPage(
+                                  category["name"], category["id"]),
                             ),
                           );
                         },
@@ -578,5 +588,61 @@ class _ProfilPageState extends State<ProfilPage> {
       ),
       label: '',
     );
+  }
+
+  Future<void> fetchRankingData() async {
+    var basicAuth = await UserInfo.getAuth();
+    String url = ApiUrl.leaderboard;
+    var response = await Api().get(url, basicAuth);
+    var jsonObj = jsonDecode(response.body);
+    print(jsonObj);
+    setState(() {
+      leaderboard = jsonObj['data'] as List<dynamic>;
+    });
+  }
+
+  Future<void> fetchWeeklyRankingData() async {
+    String url = ApiUrl.weekly;
+    var basicAuth = await UserInfo.getAuth();
+    var response = await Api().get(url, basicAuth);
+    var jsonObj = jsonDecode(response.body);
+    print(jsonObj);
+    setState(() {
+      weeklyLeaderboard = jsonObj['data'] as List<dynamic>;
+    });
+  }
+
+  int getUserRank() {
+    // Cari indeks pengguna dalam leaderboard
+    var userRank = leaderboard.indexWhere((element) {
+      return element['user'] == UserInfo.getName();
+    });
+
+    // Jika pengguna tidak ditemukan, kembalikan -1 sebagai default
+    return userRank >= 0 ? userRank + 1 : -1;
+  }
+
+  int getUserWeeklyRank() {
+    // Cari indeks pengguna dalam weeklyLeaderboard
+    var userRank = weeklyLeaderboard.indexWhere((element) {
+      return element['user'] == UserInfo.getName();
+    });
+
+    // Jika pengguna tidak ditemukan, kembalikan -1 sebagai default
+    return userRank >= 0 ? userRank + 1 : -1;
+  }
+
+  int getUserCorrectAnswer() {
+    try {
+      // Cari pengguna di leaderboard dan dapatkan jumlah jawaban benar
+      var user = leaderboard.firstWhere((element) {
+        return element['user'] == UserInfo.getName();
+      });
+
+      return user['total_correct_answer'] ?? 0;
+    } catch (e) {
+      // Jika pengguna tidak ditemukan, kembalikan 0 sebagai default
+      return 0;
+    }
   }
 }

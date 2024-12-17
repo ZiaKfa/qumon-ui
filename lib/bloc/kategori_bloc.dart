@@ -10,6 +10,7 @@ class KategoriBloc {
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
       List listKategori = data['data'];
+      print(listKategori);
       return listKategori;
     } else {
       throw Exception('Failed to load categories');

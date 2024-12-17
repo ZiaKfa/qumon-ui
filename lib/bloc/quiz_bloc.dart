@@ -28,7 +28,7 @@ class QuizBloc {
     print(body);
     var response = await Api().post(url, body, basicAuth);
     var jsonObj = json.decode(response.body);
-    print(jsonObj);
+
     return CreateQuizResponse.fromJson(jsonObj);
   }
 
@@ -36,14 +36,16 @@ class QuizBloc {
     String url = ApiUrl.quiz + '/$id';
     var basicAuth = UserInfo.getAuth();
     var response = await Api().get(url, basicAuth);
+    print(response.body);
     var jsonObj = json.decode(response.body);
+    print(jsonObj);
     return Quiz.fromJson(jsonObj);
   }
 
-  Future<Quiz> updateQuiz(
-      int? id, int? userId, int? idCategory, String? question) async {
+  Future<Quiz> updateQuiz(int? id, int? idCategory, String? question) async {
     String url = ApiUrl.quiz + '/$id';
     var basicAuth = UserInfo.getAuth();
+    var userId = await UserInfo.getId();
     var body = {
       "user_id": userId.toString(),
       "question": question,
@@ -51,6 +53,39 @@ class QuizBloc {
       "is_private": '0'
     };
     var response = await Api().put(url, body, basicAuth);
+    var jsonObj = json.decode(response.body);
+    return Quiz.fromJson(jsonObj);
+  }
+
+  Future<Quiz> getQuizByUserAndCategory(int userId, int categoryId) async {
+    String url = '${ApiUrl.quiz}/$userId/$categoryId';
+    var basicAuth = UserInfo.getAuth();
+    print(basicAuth);
+    var response = await Api().get(url, basicAuth);
+    var jsonObj = json.decode(response.body);
+    print(jsonObj);
+    return Quiz.fromJson(jsonObj);
+  }
+
+  Future<Quiz> deleteQuiz(int? id, int? idCategory, String? question) async {
+    String url = '${ApiUrl.quiz}/$id';
+    var userId = await UserInfo.getId();
+    var basicAuth = UserInfo.getAuth();
+    var body ={
+      "user_id": userId.toString(),
+      "question": question,
+      "category_id": idCategory.toString(),
+      "is_private": '1'
+    };
+    var response = await Api().put(url, body, basicAuth);
+    var jsonObj = json.decode(response.body);
+    return Quiz.fromJson(jsonObj);
+  }
+
+  Future<Quiz> getQuizByCategory(int categoryId) async {
+    String url = '${ApiUrl.quiz}/category/$categoryId';
+    var basicAuth = UserInfo.getAuth();
+    var response = await Api().get(url, basicAuth);
     var jsonObj = json.decode(response.body);
     return Quiz.fromJson(jsonObj);
   }

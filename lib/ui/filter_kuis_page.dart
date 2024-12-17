@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qumon/bloc/kategori_bloc.dart';
 import 'package:qumon/ui/home_page.dart';
+import 'package:qumon/ui/list_kategori.dart';
 import 'package:qumon/ui/peringkat_page.dart';
 import 'package:qumon/ui/profil_page.dart';
 import 'package:qumon/ui/tambah_kuis_page.dart';
@@ -82,30 +83,30 @@ class _FilterKuisPageState extends State<FilterKuisPage> {
             ),
             const SizedBox(height: 16),
             // Search Bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.8,
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Cari Kategori',
-                    prefixIcon: const Icon(Icons.search, color: Colors.white70),
-                    filled: true,
-                    fillColor: Colors.transparent,
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(color: Colors.white24),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(color: Color(0xFF6A5AE0)),
-                    ),
-                    hintStyle: const TextStyle(color: Colors.white54),
-                  ),
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 16),
+            //   child: SizedBox(
+            //     width: MediaQuery.of(context).size.width * 0.8,
+            //     child: TextField(
+            //       decoration: InputDecoration(
+            //         hintText: 'Cari Kategori',
+            //         prefixIcon: const Icon(Icons.search, color: Colors.white70),
+            //         filled: true,
+            //         fillColor: Colors.transparent,
+            //         enabledBorder: OutlineInputBorder(
+            //           borderRadius: BorderRadius.circular(16),
+            //           borderSide: const BorderSide(color: Colors.white24),
+            //         ),
+            //         focusedBorder: OutlineInputBorder(
+            //           borderRadius: BorderRadius.circular(16),
+            //           borderSide: const BorderSide(color: Color(0xFF6A5AE0)),
+            //         ),
+            //         hintStyle: const TextStyle(color: Colors.white54),
+            //       ),
+            //       style: const TextStyle(color: Colors.white),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -114,7 +115,7 @@ class _FilterKuisPageState extends State<FilterKuisPage> {
 
   Widget _buildBottom(BuildContext context) {
     final mediaSize = MediaQuery.of(context).size;
-    bool showAllQuizzes = false;
+    // bool showAllQuizzes = false;
 
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
@@ -135,10 +136,10 @@ class _FilterKuisPageState extends State<FilterKuisPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           "Kuis",
                           style: TextStyle(
                             color: Colors.black,
@@ -146,20 +147,20 @@ class _FilterKuisPageState extends State<FilterKuisPage> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              showAllQuizzes = !showAllQuizzes;
-                            });
-                          },
-                          child: Text(
-                            showAllQuizzes ? 'Show Less' : 'Show All',
-                            style: const TextStyle(
-                              color: Color(0xFF6A5AE0),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
+                        // TextButton(
+                        //   onPressed: () {
+                        //     setState(() {
+                        //       showAllQuizzes = !showAllQuizzes;
+                        //     });
+                        //   },
+                        //   child: Text(
+                        //     showAllQuizzes ? 'Show Less' : 'Show All',
+                        //     style: const TextStyle(
+                        //       color: Color(0xFF6A5AE0),
+                        //       fontWeight: FontWeight.bold,
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -208,9 +209,9 @@ class _FilterKuisPageState extends State<FilterKuisPage> {
                                           fontFamily: 'Poppins',
                                         ),
                                       ),
-                                      subtitle: Text(
-                                        "2 Kuis",
-                                        style: const TextStyle(
+                                      subtitle: const Text(
+                                        "Kategori",
+                                        style: TextStyle(
                                           color: Color(0xFF858494),
                                           fontSize: 12,
                                           fontFamily: 'Poppins',
@@ -222,7 +223,11 @@ class _FilterKuisPageState extends State<FilterKuisPage> {
                                         color: Color(0xFF6A5AE0),
                                       ),
                                       onTap: () {
-                                        // Navigation logic
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ListKategoriPage(category["name"],category["id"])));
                                       },
                                     ),
                                   );

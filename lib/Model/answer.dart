@@ -22,10 +22,10 @@ class Answer {
   }
 }
 
-class AnswerResponse { 
+class AnswerResponse {
   bool? success;
   String? message;
-  Answer? data;
+  List<Answer>? data; // Ubah menjadi List<Answer>
 
   AnswerResponse({this.success, this.message, this.data});
 
@@ -33,7 +33,9 @@ class AnswerResponse {
     return AnswerResponse(
       success: json['success'],
       message: json['message'],
-      data: Answer.fromJson(json['data']),
+      data: (json['data'] as List<dynamic>?)
+          ?.map((item) => Answer.fromJson(item))
+          .toList(),
     );
   }
 }

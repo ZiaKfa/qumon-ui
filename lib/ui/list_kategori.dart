@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:qumon/bloc/quiz_bloc.dart';
 import 'package:qumon/helpers/user_info.dart';
-import 'package:qumon/ui/edit_kuis_page.dart';
 import 'package:qumon/ui/filter_kuis_page.dart';
 import 'package:qumon/ui/home_page.dart';
 import 'package:qumon/ui/peringkat_page.dart';
 import 'package:qumon/ui/profil_page.dart';
 import 'package:qumon/ui/tambah_kuis_page.dart';
-import 'package:qumon/widget/konfirmasi.dart';
 
 
-class KuisListPage extends StatefulWidget {
+class ListKategoriPage extends StatefulWidget {
   final String category;
   final int categoryId;
 
-  const KuisListPage(this.category, this.categoryId, {Key? key})
+  const ListKategoriPage(this.category, this.categoryId, {Key? key})
       : super(key: key);
 
   @override
-  _KuisListPageState createState() => _KuisListPageState();
+  _ListKategoriPageState createState() => _ListKategoriPageState();
 }
 
-class _KuisListPageState extends State<KuisListPage> {
+class _ListKategoriPageState extends State<ListKategoriPage> {
   Future<List<Map<String, dynamic>>> quizList = Future.value([]);
 
   bool isLoading = false;
@@ -125,50 +123,6 @@ class _KuisListPageState extends State<KuisListPage> {
                             fontSize: 12,
                             fontFamily: 'Poppins',
                           ),
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(
-                                Icons.edit,
-                                size: 20,
-                                color: Color(0xFF6A5AE0),
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            EditKuisPage(quizId: int.parse(kuis["id"]))));
-                              },
-                            ),
-                            IconButton(
-                              icon: const Icon( 
-                                Icons.delete,
-                                size: 20,
-                                color: Color(0xFF6A5AE0),
-                              ),
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return ConfirmModal(
-                                      title: 'Hapus Kuis',
-                                      message: 'Apakah Anda yakin ingin menghapus kuis ini?',
-                                      onConfirm: () async {
-                                        var quizBloc = QuizBloc();
-                                        await quizBloc.deleteQuiz(int.parse(kuis["id"]), widget.categoryId, kuis["question"]);
-                                        Navigator.pop(context);
-                                        getQuizList(widget.categoryId);
-                                      },
-                                      onCancel: () => Navigator.pop(context),
-                                    );
-                                  },
-                                );
-                              },
-                            ),
-                          ],
                         ),
                       ),
                     );
@@ -306,14 +260,13 @@ class _KuisListPageState extends State<KuisListPage> {
   }
 
   Future<void> getQuizList(int categoryId) async {
-    var userId = await UserInfo.getId();
     setState(() {
       isLoading = true;
     });
 
     try {
       quizList = QuizBloc()
-          .getQuizByUserAndCategory(userId!, categoryId)
+          .getQuizByCategory(categoryId)
           .then((value) {
         return value.data
                 ?.map((quiz) => {

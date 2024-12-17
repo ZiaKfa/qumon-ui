@@ -22,4 +22,19 @@ class UserAnswerBloc {
     print(jsonObj);
     return UserAnswerResponse.fromJson(jsonObj);
   }
+
+  Future<UserAnswer> updateUserAnswer(
+      int? id, int? quiz_id, int? user_id, String? answer_text) async {
+    String url = ApiUrl.userAnswer + '/$id';
+    var basicAuth = UserInfo.getAuth();
+    var body = {
+      "user_id": user_id.toString(),
+      "quiz_id": quiz_id.toString(),
+      "answer_text": answer_text,
+    };
+    var response = await Api().put(url, body, basicAuth);
+    var jsonObj = json.decode(response.body);
+    return UserAnswer.fromJson(jsonObj);
+  }
+  
 }
