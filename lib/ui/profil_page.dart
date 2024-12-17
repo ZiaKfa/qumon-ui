@@ -447,7 +447,7 @@ class _ProfilPageState extends State<ProfilPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => KuisListPage(),
+                              builder: (context) => KuisListPage(category["name"],category["id"]),
                             ),
                           );
                         },

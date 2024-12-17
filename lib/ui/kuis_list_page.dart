@@ -8,7 +8,10 @@ import 'package:qumon/ui/profil_page.dart';
 import 'package:qumon/ui/tambah_kuis_page.dart';
 
 class KuisListPage extends StatefulWidget {
-  const KuisListPage({Key? key}) : super(key: key);
+  final String category;
+  final String categoryId;
+
+  const KuisListPage(this.category,this.categoryId, {Key? key}) : super(key: key);
 
   @override
   _KuisListPageState createState() => _KuisListPageState();
@@ -40,6 +43,7 @@ class _KuisListPageState extends State<KuisListPage> {
           ),
         ),
         backgroundColor: const Color(0xFF1A133E),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: _buildQuizList(context),
       bottomNavigationBar: _buildBottomNavigationBar(context),
@@ -50,11 +54,11 @@ class _KuisListPageState extends State<KuisListPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Text(
-            "Matematika",
-            style: TextStyle(
+            widget.category,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 18,
               fontFamily: 'Poppins',
@@ -124,12 +128,7 @@ class _KuisListPageState extends State<KuisListPage> {
                           color: Color(0xFF6A5AE0),
                         ),
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const KuisListPage(),
-                            ),
-                          );
+                          
                         },
                       ),
                     );
