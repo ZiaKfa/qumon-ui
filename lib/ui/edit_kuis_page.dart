@@ -80,7 +80,7 @@ class _EditKuisPageState extends State<EditKuisPage> {
               context: context,
               builder: (context) {
                 return SuccessModal(
-                  title: 'Success',
+                  title: 'Berhasil',
                   message: 'Soal berhasil diubah',
                   onClose: () {
                     Navigator.pushReplacement(
@@ -289,6 +289,7 @@ class _EditKuisPageState extends State<EditKuisPage> {
           ),
         ],
       ),
+      bottomNavigationBar: _buildBottomNavigationBar(context),
     );
   }
 }
@@ -321,7 +322,7 @@ Widget _buildBottomNavigationBar(BuildContext context) {
         fontFamily: 'Poppins',
         fontSize: 10,
       ),
-      currentIndex: 2,
+      currentIndex: 4,
       onTap: (index) {
         switch (index) {
           case 0:

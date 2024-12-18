@@ -210,7 +210,7 @@ class _KuisListPageState extends State<KuisListPage> {
           fontFamily: 'Poppins',
           fontSize: 10,
         ),
-        currentIndex: 2,
+        currentIndex: 4,
         onTap: (index) {
           switch (index) {
             case 0:

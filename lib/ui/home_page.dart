@@ -219,7 +219,7 @@ class _HomepageState extends State<Homepage> {
                                         showDialog(
                                           context: context,
                                           builder: (context) => WarningModal(
-                                            title: 'Peringatan!',
+                                            title: 'Dikit Lagi!',
                                             message: 'Jawabanmu hampir benar! \n Coba lagi!',
                                             onClose: () {
                                               Navigator.of(context).pop();

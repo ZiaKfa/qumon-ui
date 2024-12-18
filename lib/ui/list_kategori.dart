@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:qumon/bloc/quiz_bloc.dart';
-import 'package:qumon/helpers/user_info.dart';
 import 'package:qumon/ui/filter_kuis_page.dart';
 import 'package:qumon/ui/home_page.dart';
 import 'package:qumon/ui/peringkat_page.dart';
@@ -37,7 +36,7 @@ class _ListKategoriPageState extends State<ListKategoriPage> {
       backgroundColor: const Color(0xFF1A133E),
       appBar: AppBar(
         title: const Text(
-          'Kuis Saya',
+          'List Quiz',
           style: TextStyle(
             color: Colors.white,
             fontFamily: 'Poppins',
@@ -116,14 +115,6 @@ class _ListKategoriPageState extends State<ListKategoriPage> {
                             fontFamily: 'Poppins',
                           ),
                         ),
-                        subtitle: Text(
-                          kuis['category'] ?? 'Kategori Tidak Dikenal',
-                          style: const TextStyle(
-                            color: Color(0xFF858494),
-                            fontSize: 12,
-                            fontFamily: 'Poppins',
-                          ),
-                        ),
                       ),
                     );
                   },
@@ -164,7 +155,7 @@ class _ListKategoriPageState extends State<ListKategoriPage> {
           fontFamily: 'Poppins',
           fontSize: 10,
         ),
-        currentIndex: 2,
+        currentIndex: 1,
         onTap: (index) {
           switch (index) {
             case 0:

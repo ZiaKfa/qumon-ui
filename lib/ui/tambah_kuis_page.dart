@@ -249,7 +249,11 @@ class _TambahKuisPageState extends State<TambahKuisPage> {
                                   },
                                   child: const Text(
                                     "Simpan",
-                                    style: TextStyle(color: Colors.black),
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontFamily: 'Poppins',
+                                      fontSize: 16,
+                                    ),
                                   ),
                                 ),
                               ],

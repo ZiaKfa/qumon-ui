@@ -61,8 +61,8 @@ class _ProfilPageState extends State<ProfilPage> {
                 },
               ),
               const SizedBox(height: 20),
-              // _buildUserStatistics(),
-              // const SizedBox(height: 20),
+              _buildUserStatistics(),
+              const SizedBox(height: 20),
               // _buildMyStatistics(),
               // const SizedBox(height: 50),
               _buildQuizList(context),
@@ -222,10 +222,10 @@ class _ProfilPageState extends State<ProfilPage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _buildStatisticItem(
-                Icons.star, "SKOR", getUserCorrectAnswer().toString()),
-            _buildStatisticItem(Icons.public, "PERINGKAT", "#${getUserRank()}"),
+                Icons.star, "SKOR", "305"),
+            _buildStatisticItem(Icons.public, "PERINGKAT", "#1"),
             _buildStatisticItem(
-                Icons.autorenew, "MINGGUAN", "#${getUserWeeklyRank()}"),
+                Icons.autorenew, "MINGGUAN", "#3"),
           ],
         ),
       ),
